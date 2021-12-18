@@ -14,10 +14,17 @@
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "^5.2.0",
 		"@typescript-eslint/parser": "^5.2.0",
+		"@vapurrmaid/bpm": "^0.1.8",
 		"builtin-modules": "^3.2.0",
-		"esbuild": "0.13.12",
+		"esbuild": "^0.13.12",
+		"esbuild-plugin-svg": "^0.1.0",
+		"esbuild-plugin-vue3": "^0.3.0",
 		"obsidian": "^0.12.17",
+		"stylelint": "^14.1.0",
+		"stylelint-config-standard": "^24.0.0",
+		"tone": "^14.8.32",
 		"tslib": "2.3.1",
-		"typescript": "4.4.4"
+		"typescript": "4.4.4",
+		"vue": "^3.2.26"
 	}
 }
