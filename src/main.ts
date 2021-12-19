@@ -6,13 +6,14 @@ import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
 import { MetronomeSound, isMetronomeSound } from "./models/MetronomeSound";
 import VTooltipPlugin from "v-tooltip";
 import { Frequency } from "tone/build/esm/core/type/Units";
+import { MetronomeBPM } from "./models/MetronomeBPM";
 
 interface MetronomePluginSettings {
 	mySetting: string;
 }
 
 export interface MetronomeCodeBlockParameters {
-	bpm: number;
+	bpm: MetronomeBPM;
 	muted: boolean;
 	meter?: Meter;
 	size: MetronomeSize;
@@ -129,7 +130,7 @@ export default class MetronomePlugin extends Plugin {
 			});
 
 		return {
-			bpm: parseFloat(values.bpm) || null,
+			bpm: new MetronomeBPM(values.bpm),
 			muted: values.muted ? values.muted === "yes" : true,
 			meter: values.meter ? Meter.fromString(values.meter) : null,
 			size: isMetronomeSize(values.size) ? values.size : null,

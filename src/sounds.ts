@@ -19,4 +19,4 @@ export const tick = () => whiteNoise.triggerAttackRelease("8n");
 export const tock = () => brownNoise.triggerAttackRelease("8n");
 export const tickUpbeat = () => pinkNoise.triggerAttackRelease("8n");
 export const beep = (note: Frequency = "C4") =>
-	beepSynth.triggerAttackRelease(note, "8n");
+	beepSynth.triggerAttackRelease(note, "32n");

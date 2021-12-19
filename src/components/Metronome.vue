@@ -3,7 +3,7 @@ import { MetronomeCodeBlockParameters } from "../main";
 import MuteToggle from "./MuteToggle.vue";
 import MetronomeToggle from "./MetronomeToggle.vue";
 import { computed, ref, watch, nextTick, toRefs } from "vue";
-import { BPM, NoteDuration } from "@vapurrmaid/bpm";
+
 import {
   tick as playTick,
   tickUpbeat as playTickUpbeat,
@@ -11,6 +11,7 @@ import {
   beep as playBeep,
 } from "../sounds";
 import { useTick } from "../hooks/useTick";
+import { MetronomeBPM } from "../models/MetronomeBPM";
 
 const props = defineProps<{
   bpm: MetronomeCodeBlockParameters["bpm"];
@@ -28,11 +29,6 @@ const started = ref(props.autoStart ?? true);
 const tickColor = ref("");
 const { meter } = toRefs(props);
 const { doBeat, onTick, onTickAlternate, onTock, resetTick } = useTick(meter);
-const metronomeDurationSeconds = computed(() =>
-  new BPM(props.bpm).durationFor(
-    (props.meter && props.meter.noteDuration()) || "quarter"
-  )
-);
 
 // Do sounds
 onTick(
@@ -59,7 +55,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     ]"
     :style="{
       '--tick-color': tickColor,
-      '--metronome-duration': `${metronomeDurationSeconds}s`
+      '--metronome-duration': `${bpm.getBeatDurationSeconds(meter.value)}s`
     }"
     :data-size="props.size"
     :data-started="started"
@@ -67,7 +63,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
   >
     <div class="metronome-content">
       <MetronomeToggle v-model="started" />
-      <span class="metronome-description"><span v-if="bpm >= 500">🔥</span> {{bpm}} BPM {{meter && '&middot;'}} {{meter}}</span>
+      <span class="metronome-description"><span v-if="bpm.isSuperFast()">🔥</span> {{bpm}} {{meter && '&middot;'}} {{meter}}</span>
       <MuteToggle
         v-if="started"
         v-model="muted"
