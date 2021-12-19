@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
+	"id": "obsidian-metronome-plugin",
 	"name": "Metronome",
-	"version": "0.1",
-	"minAppVersion": "0.12.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"version": "0.1.0",
+	"minAppVersion": "0.12.19",
+	"description": "Add interactive metronomes to your notes.",
+	"author": "Curt Grimes",
+	"authorUrl": "https://curtgrimes.com",
 	"isDesktopOnly": false
 }

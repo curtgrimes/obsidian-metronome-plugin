@@ -45,6 +45,15 @@ export default class MetronomePlugin extends Plugin {
 				const child = new MarkdownRenderChild(div);
 				context.addChild(child);
 				el.append(div);
+
+				child.onunload = () => {
+					// Remove stuck tooltips, if any
+					const stuckTooltips =
+						document.querySelectorAll(".v-popper__popper");
+					for (let i = 0; i < stuckTooltips.length; i++) {
+						stuckTooltips[i].remove();
+					}
+				};
 			}
 		);
 	}

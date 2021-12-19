@@ -36,7 +36,11 @@ onTick(
     !muted.value &&
     (props.sound === "beep" ? playBeep(props.beepTick) : playTick())
 );
-onTickAlternate(() => !muted.value && playTickUpbeat());
+onTickAlternate(
+  () =>
+    !muted.value &&
+    (props.sound === "beep" ? playBeep(props.beepTick) : playTickUpbeat())
+);
 onTock(
   () =>
     !muted.value &&
