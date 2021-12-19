@@ -23,17 +23,9 @@ watch(
 
 <template>
   <button
-    :class="['sound-toggle', {'enabled': props.modelValue}]"
+    :class="{'enabled': props.modelValue}"
     @click="emit('update:modelValue', !props.modelValue)"
-    title="Toggle sound"
-  >
-    <div
-      v-if="props.modelValue"
-      v-html="VolumeUpIcon"
-    ></div>
-    <div
-      v-else
-      v-html="VolumeMuteIcon"
-    ></div>
-  </button>
+    v-tooltip="props.modelValue ? 'Mute' : 'Unmute'"
+    v-html="props.modelValue ? VolumeUpIcon : VolumeMuteIcon"
+  ></button>
 </template>

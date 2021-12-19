@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MetronomeCodeBlockParameters } from "../main";
 import SoundToggle from "./SoundToggle.vue";
+import MetronomeToggle from "./MetronomeToggle.vue";
 import { computed, ref, watch, nextTick, toRefs } from "vue";
 import { BPM, NoteDuration } from "@vapurrmaid/bpm";
 import {
@@ -15,9 +16,11 @@ const props = defineProps<{
   sound: MetronomeCodeBlockParameters["sound"];
   meter: MetronomeCodeBlockParameters["meter"];
   size: MetronomeCodeBlockParameters["size"];
+  collapsed: MetronomeCodeBlockParameters["collapsed"];
 }>();
 
 const soundOn = ref(props.sound);
+const collapsed = ref(props.collapsed);
 const tickColor = ref("");
 const { meter } = toRefs(props);
 const { doBeat, onTick, onTickAlternate, onTock, resetTick } = useTick(meter);
@@ -34,7 +37,7 @@ onTock(() => soundOn.value && playTock());
 
 // Do visuals
 onTick(() => (tickColor.value = "rgba(168, 8, 8, 1)"));
-onTock(() => (tickColor.value = "rgba(100, 100, 100, .55)"));
+onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 </script>
 
 <template>
@@ -47,12 +50,15 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .55)"));
       '--metronome-duration': `${metronomeDurationSeconds}s`
     }"
     :data-size="props.size"
-    @animationiteration="doBeat"
+    @animationiteration="(e) => e.animationName === 'metronome-pulse' && doBeat()"
   >
-    <span class="metronome-description">{{bpm}} BPM {{meter && '&middot;'}} {{meter}}</span>
-    <SoundToggle
-      v-model="soundOn"
-      @soundOn="resetTick"
-    />
+    <div class="metronome-content">
+      <MetronomeToggle v-model="collapsed" />
+      <span class="metronome-description">{{bpm}} BPM {{meter && '&middot;'}} {{meter}}</span>
+      <SoundToggle
+        v-model="soundOn"
+        @soundOn="resetTick"
+      />
+    </div>
   </div>
 </template>

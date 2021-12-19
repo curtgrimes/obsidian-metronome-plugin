@@ -3,6 +3,7 @@ import Metronome from "./components/Metronome.vue";
 import { createApp } from "vue";
 import { Meter } from "./models/Meter";
 import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
+import VTooltipPlugin from "v-tooltip";
 
 interface MetronomePluginSettings {
 	mySetting: string;
@@ -13,6 +14,7 @@ export interface MetronomeCodeBlockParameters {
 	sound: boolean;
 	meter?: Meter;
 	size: MetronomeSize;
+	collapsed: boolean;
 }
 
 const DEFAULT_SETTINGS: MetronomePluginSettings = {
@@ -32,10 +34,18 @@ export default class MetronomePlugin extends Plugin {
 				const parameters = this.getCodeBlockParameters(src);
 
 				const div = document.createElement("div");
-
-				createApp(Metronome, {
+				const app = createApp(Metronome, {
 					...parameters,
-				}).mount(div);
+				});
+				app.use(VTooltipPlugin, {
+					offset: [0, 10],
+					themes: {
+						tooltip: {
+							hideTriggers: () => ["hover"],
+						},
+					},
+				});
+				app.mount(div);
 
 				const child = new MarkdownRenderChild(div);
 				context.addChild(child);
@@ -118,6 +128,7 @@ export default class MetronomePlugin extends Plugin {
 			sound: values.sound === "yes",
 			meter: values.meter ? Meter.fromString(values.meter) : null,
 			size: isMetronomeSize(values.size) ? values.size : null,
+			collapsed: values.collapsed === "yes",
 		};
 	}
 }
