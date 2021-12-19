@@ -16,11 +16,11 @@ const props = defineProps<{
   sound: MetronomeCodeBlockParameters["sound"];
   meter: MetronomeCodeBlockParameters["meter"];
   size: MetronomeCodeBlockParameters["size"];
-  collapsed: MetronomeCodeBlockParameters["collapsed"];
+  autoStart: MetronomeCodeBlockParameters["autoStart"];
 }>();
 
 const soundOn = ref(props.sound);
-const collapsed = ref(props.collapsed);
+const started = ref(props.autoStart ?? true);
 const tickColor = ref("");
 const { meter } = toRefs(props);
 const { doBeat, onTick, onTickAlternate, onTock, resetTick } = useTick(meter);
@@ -50,12 +50,14 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
       '--metronome-duration': `${metronomeDurationSeconds}s`
     }"
     :data-size="props.size"
+    :data-started="started"
     @animationiteration="(e) => e.animationName === 'metronome-pulse' && doBeat()"
   >
     <div class="metronome-content">
-      <MetronomeToggle v-model="collapsed" />
-      <span class="metronome-description">{{bpm}} BPM {{meter && '&middot;'}} {{meter}}</span>
+      <MetronomeToggle v-model="started" />
+      <span class="metronome-description"><span v-if="bpm >= 500">🔥</span> {{bpm}} BPM {{meter && '&middot;'}} {{meter}}</span>
       <SoundToggle
+        v-if="started"
         v-model="soundOn"
         @soundOn="resetTick"
       />

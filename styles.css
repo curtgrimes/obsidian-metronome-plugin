@@ -10,6 +10,15 @@
     font-size: 0.68rem;
 }
 
+.metronome-metronome[data-started="false"] {
+    background: var(--scrollbar-bg);
+}
+
+.metronome-metronome[data-started="false"],
+.metronome-metronome[data-started="false"] .pendulum {
+    animation: none;
+}
+
 /* Sizes: ["small" (default), "medium", "large"] */
 .metronome-metronome[data-size="medium"] {
     height: 4rem;

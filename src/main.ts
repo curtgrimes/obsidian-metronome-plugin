@@ -14,7 +14,7 @@ export interface MetronomeCodeBlockParameters {
 	sound: boolean;
 	meter?: Meter;
 	size: MetronomeSize;
-	collapsed: boolean;
+	autoStart: boolean;
 }
 
 const DEFAULT_SETTINGS: MetronomePluginSettings = {
@@ -128,7 +128,7 @@ export default class MetronomePlugin extends Plugin {
 			sound: values.sound === "yes",
 			meter: values.meter ? Meter.fromString(values.meter) : null,
 			size: isMetronomeSize(values.size) ? values.size : null,
-			collapsed: values.collapsed === "yes",
+			autoStart: values.autoStart ? values.autoStart === "yes" : null,
 		};
 	}
 }
