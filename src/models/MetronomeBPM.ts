@@ -1,4 +1,5 @@
 import { BPM } from "@vapurrmaid/bpm";
+import { Ref } from "vue";
 
 import { Meter } from "./Meter";
 
@@ -9,10 +10,10 @@ export class MetronomeBPM {
 		this.bpm = parseFloat(bpm as string);
 	}
 
-	getBeatDurationSeconds(meter: Meter): number {
+	getBeatDurationSeconds(meter: Ref<Meter>): number {
 		return this.isValid()
 			? new BPM(this.bpm || 0).durationFor(
-					(meter && meter.noteDuration()) || "quarter"
+					meter?.value?.noteDuration() || "quarter"
 			  )
 			: Number.MAX_SAFE_INTEGER;
 	}

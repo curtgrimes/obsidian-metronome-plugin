@@ -55,7 +55,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     ]"
     :style="{
       '--tick-color': tickColor,
-      '--metronome-duration': `${bpm.getBeatDurationSeconds(meter.value)}s`
+      '--metronome-duration': `${bpm.getBeatDurationSeconds(meter)}s`
     }"
     :data-size="props.size"
     :data-started="started"

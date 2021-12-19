@@ -18,5 +18,12 @@ const pinkNoise = new Tone.NoiseSynth({
 export const tick = () => whiteNoise.triggerAttackRelease("8n");
 export const tock = () => brownNoise.triggerAttackRelease("8n");
 export const tickUpbeat = () => pinkNoise.triggerAttackRelease("8n");
-export const beep = (note: Frequency = "C4") =>
-	beepSynth.triggerAttackRelease(note, "32n");
+export const beep = (note: Frequency = "C4") => {
+	try {
+		beepSynth.triggerAttackRelease(note, "32n");
+	} catch (e) {
+		// Probably invalid note value. Play no note instead.
+		console.error(e);
+		beepSynth.triggerRelease();
+	}
+};
