@@ -7,15 +7,15 @@ const props = defineProps({
   modelValue: Boolean,
 });
 
-const emit = defineEmits(["update:modelValue", "soundOn", "soundOff"]);
+const emit = defineEmits(["update:modelValue", "muted", "unmuted"]);
 
 watch(
   () => props.modelValue,
   (modelValue) => {
     if (modelValue) {
-      emit("soundOn");
+      emit("muted");
     } else {
-      emit("soundOff");
+      emit("unmuted");
     }
   }
 );
@@ -25,7 +25,7 @@ watch(
   <button
     :class="{'enabled': props.modelValue}"
     @click="emit('update:modelValue', !props.modelValue)"
-    v-tooltip="props.modelValue ? 'Mute' : 'Unmute'"
-    v-html="props.modelValue ? VolumeUpIcon : VolumeMuteIcon"
+    v-tooltip="props.modelValue ? 'Unmute' : 'Mute'"
+    v-html="props.modelValue ? VolumeMuteIcon : VolumeUpIcon"
   ></button>
 </template>

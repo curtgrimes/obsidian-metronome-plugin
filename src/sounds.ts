@@ -1,8 +1,7 @@
-window.TONE_SILENCE_LOGGING = true;
-
 import * as Tone from "tone/build/esm";
+import { Frequency } from "tone/build/esm/core/type/Units";
 
-// const synth = new Tone.Synth().toDestination();
+const beepSynth = new Tone.Synth().toDestination();
 
 const whiteNoise = new Tone.NoiseSynth({
 	noise: { type: "white" },
@@ -19,3 +18,5 @@ const pinkNoise = new Tone.NoiseSynth({
 export const tick = () => whiteNoise.triggerAttackRelease("8n");
 export const tock = () => brownNoise.triggerAttackRelease("8n");
 export const tickUpbeat = () => pinkNoise.triggerAttackRelease("8n");
+export const beep = (note: Frequency = "C4") =>
+	beepSynth.triggerAttackRelease(note, "8n");

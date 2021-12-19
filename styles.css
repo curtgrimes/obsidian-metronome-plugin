@@ -89,7 +89,7 @@
 }
 
 .metronome-metronome .pendulum {
-    animation: pendulum-swing calc(var(--metronome-duration) * 2) calc(var(--metronome-duration) / 2) infinite ease-in-out;
+    animation: pendulum-swing calc(var(--metronome-duration) * 2) calc(var(--metronome-duration) / 2) infinite cubic-bezier(0.65, 0, 0.35, 1);
     transform-origin: bottom;
     transform-box: fill-box;
 }

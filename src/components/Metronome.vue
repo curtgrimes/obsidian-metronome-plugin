@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MetronomeCodeBlockParameters } from "../main";
-import SoundToggle from "./SoundToggle.vue";
+import MuteToggle from "./MuteToggle.vue";
 import MetronomeToggle from "./MetronomeToggle.vue";
 import { computed, ref, watch, nextTick, toRefs } from "vue";
 import { BPM, NoteDuration } from "@vapurrmaid/bpm";
@@ -8,18 +8,22 @@ import {
   tick as playTick,
   tickUpbeat as playTickUpbeat,
   tock as playTock,
+  beep as playBeep,
 } from "../sounds";
 import { useTick } from "../hooks/useTick";
 
 const props = defineProps<{
   bpm: MetronomeCodeBlockParameters["bpm"];
-  sound: MetronomeCodeBlockParameters["sound"];
+  muted: MetronomeCodeBlockParameters["muted"];
   meter: MetronomeCodeBlockParameters["meter"];
   size: MetronomeCodeBlockParameters["size"];
   autoStart: MetronomeCodeBlockParameters["autoStart"];
+  sound: MetronomeCodeBlockParameters["sound"];
+  beepTick: MetronomeCodeBlockParameters["beepTick"];
+  beepTock: MetronomeCodeBlockParameters["beepTock"];
 }>();
 
-const soundOn = ref(props.sound);
+const muted = ref(props.muted);
 const started = ref(props.autoStart ?? true);
 const tickColor = ref("");
 const { meter } = toRefs(props);
@@ -31,9 +35,17 @@ const metronomeDurationSeconds = computed(() =>
 );
 
 // Do sounds
-onTick(() => soundOn.value && playTick());
-onTickAlternate(() => soundOn.value && playTickUpbeat());
-onTock(() => soundOn.value && playTock());
+onTick(
+  () =>
+    !muted.value &&
+    (props.sound === "beep" ? playBeep(props.beepTick) : playTick())
+);
+onTickAlternate(() => !muted.value && playTickUpbeat());
+onTock(
+  () =>
+    !muted.value &&
+    (props.sound === "beep" ? playBeep(props.beepTock) : playTock())
+);
 
 // Do visuals
 onTick(() => (tickColor.value = "rgba(168, 8, 8, 1)"));
@@ -56,10 +68,10 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     <div class="metronome-content">
       <MetronomeToggle v-model="started" />
       <span class="metronome-description"><span v-if="bpm >= 500">🔥</span> {{bpm}} BPM {{meter && '&middot;'}} {{meter}}</span>
-      <SoundToggle
+      <MuteToggle
         v-if="started"
-        v-model="soundOn"
-        @soundOn="resetTick"
+        v-model="muted"
+        @unmuted="resetTick"
       />
     </div>
   </div>

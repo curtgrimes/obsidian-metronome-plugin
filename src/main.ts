@@ -3,7 +3,9 @@ import Metronome from "./components/Metronome.vue";
 import { createApp } from "vue";
 import { Meter } from "./models/Meter";
 import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
+import { MetronomeSound, isMetronomeSound } from "./models/MetronomeSound";
 import VTooltipPlugin from "v-tooltip";
+import { Frequency } from "tone/build/esm/core/type/Units";
 
 interface MetronomePluginSettings {
 	mySetting: string;
@@ -11,10 +13,13 @@ interface MetronomePluginSettings {
 
 export interface MetronomeCodeBlockParameters {
 	bpm: number;
-	sound: boolean;
+	muted: boolean;
 	meter?: Meter;
 	size: MetronomeSize;
 	autoStart: boolean;
+	sound: MetronomeSound;
+	beepTick: Frequency;
+	beepTock: Frequency;
 }
 
 const DEFAULT_SETTINGS: MetronomePluginSettings = {
@@ -125,10 +130,13 @@ export default class MetronomePlugin extends Plugin {
 
 		return {
 			bpm: parseFloat(values.bpm) || null,
-			sound: values.sound === "yes",
+			muted: values.muted ? values.muted === "yes" : true,
 			meter: values.meter ? Meter.fromString(values.meter) : null,
 			size: isMetronomeSize(values.size) ? values.size : null,
 			autoStart: values.autoStart ? values.autoStart === "yes" : null,
+			sound: isMetronomeSound(values.sound) ? values.sound : "click",
+			beepTick: values.beepTick || "C6",
+			beepTock: values.beepTock || "C5",
 		};
 	}
 }
