@@ -55,7 +55,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 <template>
   <div
     :class="[
-      'metronome-metronome',
+      'metronome',
     ]"
     :style="{
       '--tick-color': tickColor,
@@ -63,16 +63,87 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     }"
     :data-size="props.size"
     :data-started="started"
-    @animationiteration="(e) => e.animationName === 'metronome-pulse' && doBeat()"
+    @animationiteration="(e) => e.animationName.startsWith('metronome-pulse') && doBeat()"
   >
-    <div class="metronome-content">
-      <MetronomeToggle v-model="started" />
-      <span class="metronome-description"><span v-if="bpm.isSuperFast()">🔥</span> {{bpm}} {{meter && '&middot;'}} {{meter}}</span>
+    <div class="content">
+      <MetronomeToggle
+        v-model="started"
+        :size="props.size"
+      />
+      <span class="description"><span v-if="bpm.isSuperFast()">🔥</span> {{bpm}} {{meter && '&middot;'}} {{meter}}</span>
       <MuteToggle
         v-if="started"
         v-model="muted"
+        :size="props.size"
         @unmuted="resetTick"
       />
     </div>
   </div>
 </template>
+
+<style lang="scss">
+// The tooltip CSS cannot be scoped because we use it
+// across the app.
+@import "../assets/tooltip.scss";
+</style>
+
+<style lang="scss" scoped>
+.metronome {
+  border-radius: 0.25rem;
+  animation: metronome-pulse var(--metronome-duration) infinite;
+  margin: 15px 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.25rem;
+  font-size: 0.68rem;
+
+  &[data-started="false"] {
+    background: var(--scrollbar-bg);
+    animation: none;
+  }
+
+  @keyframes metronome-pulse {
+    0% {
+      background: var(--tick-color);
+    }
+
+    100% {
+      background: var(--scrollbar-bg);
+    }
+  }
+
+  /* Sizes: ["small" (default), "medium", "large"] */
+  &[data-size="medium"] {
+    height: 4rem;
+    align-items: flex-end;
+    font-size: 0.8rem;
+  }
+
+  &[data-size="large"] {
+    height: 15rem;
+    align-items: flex-end;
+    font-size: 0.8rem;
+  }
+
+  &[data-size="xlarge"] {
+    height: 18rem;
+    align-items: flex-end;
+    font-size: 1rem;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .description {
+    font-weight: bold;
+    margin-right: auto;
+    padding: 0 0.25rem;
+    opacity: 0.5;
+  }
+}
+</style>

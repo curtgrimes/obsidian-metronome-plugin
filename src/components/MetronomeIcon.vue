@@ -1,3 +1,8 @@
+<script setup lang="ts">
+defineProps<{
+  swinging?: Boolean;
+}>();
+</script>
 
 <template>
   <svg
@@ -11,8 +16,36 @@
     <g transform="matrix(1,0,0,0.972522,4.29531,0.0786472)">
       <path
         d="M4.155,9.891L4.155,3.157C4.155,2.902 3.953,2.694 3.705,2.694C3.456,2.694 3.255,2.902 3.255,3.157L3.255,9.891C3.255,10.147 3.456,10.354 3.705,10.354C3.953,10.354 4.155,10.147 4.155,9.891Z"
-        class="pendulum"
+        :class="['pendulum',{swinging}]"
       />
     </g>
   </svg>
 </template>
+
+<style lang="scss" scoped>
+.metronome-metronome[data-started="false"] .pendulum {
+  animation: none;
+}
+
+.pendulum {
+  transform-origin: bottom;
+  transform-box: fill-box;
+
+  &.swinging {
+    animation: pendulum-swing calc(var(--metronome-duration) * 2)
+      calc(var(--metronome-duration) / -2) infinite
+      cubic-bezier(0.65, 0, 0.35, 1);
+  }
+}
+
+@keyframes pendulum-swing {
+  0%,
+  100% {
+    transform: rotate(-30deg);
+  }
+
+  50% {
+    transform: rotate(30deg);
+  }
+}
+</style>
