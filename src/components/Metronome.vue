@@ -3,6 +3,8 @@ import { MetronomeCodeBlockParameters } from "../main";
 import MuteToggle from "./MuteToggle.vue";
 import MetronomeToggle from "./MetronomeToggle.vue";
 import { computed, ref, watch, nextTick, toRefs } from "vue";
+import MetronomeIcon from "../components/MetronomeIcon.vue";
+import StyleLine from "../components/StyleLine.vue";
 
 import {
   tick as playTick,
@@ -18,6 +20,7 @@ const props = defineProps<{
   muted: MetronomeCodeBlockParameters["muted"];
   meter: MetronomeCodeBlockParameters["meter"];
   size: MetronomeCodeBlockParameters["size"];
+  style: MetronomeCodeBlockParameters["style"];
   autoStart: MetronomeCodeBlockParameters["autoStart"];
   sound: MetronomeCodeBlockParameters["sound"];
   beepTick: MetronomeCodeBlockParameters["beepTick"];
@@ -54,9 +57,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 
 <template>
   <div
-    :class="[
-      'metronome',
-    ]"
+    class="metronome"
     :style="{
       '--tick-color': tickColor,
       '--metronome-duration': `${bpm.getBeatDurationSeconds(meter)}s`
@@ -65,6 +66,17 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     :data-started="started"
     @animationiteration="(e) => e.animationName.startsWith('metronome-pulse') && doBeat()"
   >
+    <div class="style">
+      <MetronomeIcon
+        v-if="props.style === 'pendulum'"
+        style="position: absolute;top: 0;right: 0;bottom: 0;left: 0;"
+        :swinging="started"
+      />
+      <StyleLine
+        v-else-if="props.style === 'line'"
+        :swinging="started"
+      />
+    </div>
     <div class="content">
       <MetronomeToggle
         v-model="started"
@@ -94,6 +106,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
   margin: 15px 0;
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   padding: 0.25rem;
@@ -144,6 +157,12 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     margin-right: auto;
     padding: 0 0.25rem;
     opacity: 0.5;
+  }
+
+  .style {
+    height: 100%;
+    width: 100%;
+    position: relative;
   }
 }
 </style>
