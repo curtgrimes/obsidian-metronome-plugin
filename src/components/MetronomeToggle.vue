@@ -16,7 +16,7 @@ const emit = defineEmits(["update:modelValue"]);
   <Button
     :class="{'enabled': props.modelValue}"
     @click="emit('update:modelValue', !props.modelValue)"
-    v-tooltip="props.modelValue ? 'Stop metronome' : 'Start metronome'"
+    :aria-label="props.modelValue ? 'Stop metronome' : 'Start metronome'"
     v-bind="{size: props.size}"
   >
     <MetronomeIcon :swinging="props.modelValue" />

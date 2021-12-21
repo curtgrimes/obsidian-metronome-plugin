@@ -94,12 +94,6 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 </template>
 
 <style lang="scss">
-// The tooltip CSS cannot be scoped because we use it
-// across the app.
-@import "../assets/tooltip.scss";
-</style>
-
-<style lang="scss">
 // Move the mute button slightly out of the way of the edit button that overlays
 // the component in live preview mode
 .is-live-preview .block-language-metronome .metronome[data-size="small"] {

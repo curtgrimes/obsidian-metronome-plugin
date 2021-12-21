@@ -28,7 +28,7 @@ watch(
   <Button
     :class="{'enabled': props.modelValue}"
     @click="emit('update:modelValue', !props.modelValue)"
-    v-tooltip="props.modelValue ? 'Unmute' : 'Mute'"
+    :aria-label="props.modelValue ? 'Unmute' : 'Mute'"
     v-bind="{size: props.size}"
     v-html="props.modelValue ? VolumeMuteIcon : VolumeUpIcon"
   />

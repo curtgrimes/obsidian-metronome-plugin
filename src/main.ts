@@ -5,7 +5,6 @@ import { Meter } from "./models/Meter";
 import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
 import { MetronomeSound, isMetronomeSound } from "./models/MetronomeSound";
 import { MetronomeStyle, isMetronomeStyle } from "./models/MetronomeStyle";
-import VTooltipPlugin from "v-tooltip";
 import { Frequency } from "tone/build/esm/core/type/Units";
 import { MetronomeBPM } from "./models/MetronomeBPM";
 
@@ -34,28 +33,11 @@ export default class MetronomePlugin extends Plugin {
 				const app = createApp(Metronome, {
 					...parameters,
 				});
-				app.use(VTooltipPlugin, {
-					offset: [0, 10],
-					themes: {
-						tooltip: {
-							hideTriggers: () => ["hover"],
-						},
-					},
-				});
 				app.mount(div);
 
 				const child = new MarkdownRenderChild(div);
 				context.addChild(child);
 				el.append(div);
-
-				child.onunload = () => {
-					// Remove stuck tooltips, if any
-					const stuckTooltips =
-						document.querySelectorAll(".v-popper__popper");
-					for (let i = 0; i < stuckTooltips.length; i++) {
-						stuckTooltips[i].remove();
-					}
-				};
 			}
 		);
 	}
