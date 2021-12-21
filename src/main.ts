@@ -75,7 +75,7 @@ export default class MetronomePlugin extends Plugin {
 			bpm: new MetronomeBPM(values.bpm),
 			muted: values.muted ? values.muted === "yes" : true,
 			meter: values.meter ? Meter.fromString(values.meter) : null,
-			size: isMetronomeSize(values.size) ? values.size : null,
+			size: isMetronomeSize(values.size) ? values.size : "small",
 			style: isMetronomeStyle(values.style) ? values.style : "pulse",
 			autoStart: values.autoStart ? values.autoStart === "yes" : null,
 			sound: isMetronomeSound(values.sound) ? values.sound : "click",

@@ -18,15 +18,15 @@ const props = defineProps<{
 .button {
   background: none;
   border: none;
-  padding: 0;
+  padding: 0.25rem;
   margin: 0;
   cursor: pointer;
   outline: 0 !important;
   box-shadow: none !important;
   border-radius: 0.2rem;
   opacity: 0.5;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.75rem;
+  height: 1.75rem;
   display: flex;
   align-items: center;
   justify-content: center;

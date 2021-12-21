@@ -99,17 +99,27 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 @import "../assets/tooltip.scss";
 </style>
 
+<style lang="scss">
+// Move the mute button slightly out of the way of the edit button that overlays
+// the component in live preview mode
+.is-live-preview .block-language-metronome .metronome[data-size="small"] {
+  transition: margin 0.25s;
+
+  &:hover {
+    margin-right: 2rem;
+  }
+}
+</style>
+
 <style lang="scss" scoped>
 .metronome {
   border-radius: 0.25rem;
   animation: metronome-pulse var(--metronome-duration) infinite;
-  margin: 15px 0;
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: 0.25rem;
   font-size: 0.68rem;
 
   &[data-started="false"] {
