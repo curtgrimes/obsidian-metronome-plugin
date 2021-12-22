@@ -1,8 +1,8 @@
 {
 	"id": "obsidian-metronome-plugin",
 	"name": "Metronome",
-	"version": "0.2.0",
-	"minAppVersion": "0.12.19",
+	"version": "0.3.0",
+	"minAppVersion": "0.13.14",
 	"description": "Add interactive metronomes to your notes.",
 	"author": "Curt Grimes",
 	"authorUrl": "https://curtgrimes.com",
