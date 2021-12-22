@@ -31,6 +31,8 @@ export function useTick(meter: Ref<Meter>) {
 	const onTickCallbacks: CallableFunction[] = [];
 	const onTickAlternateCallbacks: CallableFunction[] = [];
 	const onTockCallbacks: CallableFunction[] = [];
+	const onBeatCallbacks: CallableFunction[] = [];
+	const onNextBeatOnlyCallbacks: CallableFunction[] = [];
 
 	const onTick = (callback: CallableFunction) => {
 		onTickCallbacks.push(callback);
@@ -42,10 +44,28 @@ export function useTick(meter: Ref<Meter>) {
 	const onTock = (callback: CallableFunction) =>
 		onTockCallbacks.push(callback);
 
+	const onBeat = (callback: CallableFunction) =>
+		onBeatCallbacks.push(callback);
+
+	const onNextBeatOnly = (callback: CallableFunction) =>
+		onNextBeatOnlyCallbacks.push(callback);
+
+	const runCallbacks = (callbacks: CallableFunction[]) =>
+		callbacks.forEach((callback) => callback());
+
 	watch(beatCount, () => {
+		runCallbacks(onBeatCallbacks);
+
 		if (resetAfterNextBeat.value) {
 			beatCount.value = 0;
 			resetAfterNextBeat.value = false;
+		}
+
+		if (onNextBeatOnlyCallbacks.length) {
+			runCallbacks(onNextBeatOnlyCallbacks);
+
+			// We are only running these once, so clear the array
+			onNextBeatOnlyCallbacks.length = 0;
 		}
 	});
 
@@ -55,7 +75,7 @@ export function useTick(meter: Ref<Meter>) {
 		}
 
 		if (currentBeatIsTick) {
-			onTickCallbacks.forEach((callback) => callback());
+			runCallbacks(onTickCallbacks);
 		}
 	});
 
@@ -67,7 +87,7 @@ export function useTick(meter: Ref<Meter>) {
 			}
 
 			if (currentBeatIsTickAlternate) {
-				onTickAlternateCallbacks.forEach((callback) => callback());
+				runCallbacks(onTickAlternateCallbacks);
 			}
 		}
 	);
@@ -78,9 +98,17 @@ export function useTick(meter: Ref<Meter>) {
 		}
 
 		if (currentBeatIsTock) {
-			onTockCallbacks.forEach((callback) => callback());
+			runCallbacks(onTockCallbacks);
 		}
 	});
 
-	return { doBeat, onTick, onTickAlternate, onTock, resetTick };
+	return {
+		doBeat,
+		onBeat,
+		onNextBeatOnly,
+		onTick,
+		onTickAlternate,
+		onTock,
+		resetTick,
+	};
 }

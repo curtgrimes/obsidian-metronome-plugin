@@ -1,7 +1,18 @@
 <script setup lang="ts">
-defineProps<{
+import { ref } from "vue";
+import { useCSSAnimationSynchronizer } from "src/hooks/useCSSAnimationSynchronizer";
+
+const props = defineProps<{
   swinging?: Boolean;
+  onBeat: CallableFunction;
 }>();
+
+const line = ref(null);
+
+const haltAnimationStyle = useCSSAnimationSynchronizer({
+  synchronizeElement: line,
+  onBeat: props.onBeat,
+});
 </script>
 
 <template>
@@ -9,6 +20,8 @@ defineProps<{
     <div
       class="line"
       :class="{swinging}"
+      ref="line"
+      :style={...haltAnimationStyle}
     ></div>
   </div>
 </template>
@@ -27,8 +40,8 @@ $width: 10px;
   border-radius: 10rem;
 
   &.swinging {
-    animation: pendulum-swing calc(var(--metronome-duration) * 2) infinite
-      linear;
+    animation: pendulum-swing calc(var(--metronome-duration) * 2)
+      var(--sync-delay, "0s") infinite linear;
   }
 }
 

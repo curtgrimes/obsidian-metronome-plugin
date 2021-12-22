@@ -13,6 +13,7 @@ import {
 } from "../sounds";
 import { useTick } from "../hooks/useTick";
 import { useParentMarkdownWrapperVisibilityWatcher } from "../hooks/useParentMarkdownWrapperVisibilityWatcher";
+import { useCSSAnimationSynchronizer } from "../hooks/useCSSAnimationSynchronizer";
 
 const props = defineProps<{
   bpm: MetronomeCodeBlockParameters["bpm"];
@@ -26,14 +27,20 @@ const props = defineProps<{
   beepTock: MetronomeCodeBlockParameters["beepTock"];
 }>();
 
-const metronome = ref(null);
+const metronome = ref<HTMLElement>(null);
 const muted = ref(props.muted);
 const started = ref(props.autoStart ?? true);
 const tickColor = ref("");
 const { meter } = toRefs(props);
-const { doBeat, onTick, onTickAlternate, onTock, resetTick } = useTick(meter);
+const { doBeat, onBeat, onTick, onTickAlternate, onTock, resetTick } =
+  useTick(meter);
 const parentWrapperIsVisible =
   useParentMarkdownWrapperVisibilityWatcher(metronome);
+
+const haltAnimationStyle = useCSSAnimationSynchronizer({
+  synchronizeElement: metronome,
+  onBeat,
+});
 
 // Do sounds
 onTick(
@@ -88,7 +95,8 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     class="metronome"
     :style="{
       '--tick-color': tickColor,
-      '--metronome-duration': `${bpm.getBeatDurationSeconds(meter)}s`
+      '--metronome-duration': `${bpm.getBeatDurationSeconds(meter)}s`,
+      ...haltAnimationStyle
     }"
     :data-size="props.size"
     :data-started="started"
@@ -98,16 +106,19 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
         v-if="props.style === 'pendulum'"
         style="position: absolute;top: 0;right: 0;bottom: 0;left: 0;"
         :swinging="started"
+        :on-beat="onBeat"
       />
       <StyleLine
         v-else-if="props.style === 'line'"
         :swinging="started"
+        :on-beat="onBeat"
       />
     </div>
     <div class="content">
       <MetronomeToggle
         v-model="started"
         :size="props.size"
+        :on-beat="onBeat"
       />
       <span class="description"><span v-if="bpm.isSuperFast()">🔥</span> {{bpm}} {{meter && '&middot;'}} {{meter}}</span>
       <MuteToggle
@@ -135,7 +146,8 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 <style lang="scss" scoped>
 .metronome {
   border-radius: 0.25rem;
-  animation: metronome-pulse var(--metronome-duration) infinite;
+  animation: metronome-pulse var(--metronome-duration) var(--sync-delay, "0s")
+    infinite;
   position: relative;
   display: flex;
   flex-direction: column;
