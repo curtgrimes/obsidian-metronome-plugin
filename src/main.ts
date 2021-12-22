@@ -45,9 +45,7 @@ export default class MetronomePlugin extends Plugin {
 				context.addChild(child);
 				el.append(div);
 
-				child.onunload = () => {
-					this.metronomeAppInstances.forEach((app) => app.unmount());
-				};
+				child.onunload = () => app.unmount();
 			}
 		);
 	}
