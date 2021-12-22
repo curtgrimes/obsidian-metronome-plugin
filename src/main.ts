@@ -1,6 +1,6 @@
 import { MarkdownPostProcessor, MarkdownRenderChild, Plugin } from "obsidian";
 import Metronome from "./components/Metronome.vue";
-import { createApp } from "vue";
+import { App, createApp } from "vue";
 import { Meter } from "./models/Meter";
 import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
 import { MetronomeSound, isMetronomeSound } from "./models/MetronomeSound";
@@ -22,6 +22,7 @@ export interface MetronomeCodeBlockParameters {
 
 export default class MetronomePlugin extends Plugin {
 	processors: MarkdownPostProcessor[];
+	metronomeAppInstances: App<Element>[] = [];
 
 	async onload() {
 		this.registerMarkdownCodeBlockProcessor(
@@ -30,19 +31,31 @@ export default class MetronomePlugin extends Plugin {
 				const parameters = this.getCodeBlockParameters(src);
 
 				const div = document.createElement("div");
+				const child = new MarkdownRenderChild(div);
+
 				const app = createApp(Metronome, {
 					...parameters,
+					onDidCreateInterval(interval: number) {
+						child.registerInterval(interval);
+					},
 				});
-				app.mount(div);
+				this.metronomeAppInstances.push(app);
 
-				const child = new MarkdownRenderChild(div);
+				app.mount(div);
 				context.addChild(child);
 				el.append(div);
+
+				child.onunload = () => {
+					this.metronomeAppInstances.forEach((app) => app.unmount());
+				};
 			}
 		);
 	}
 
-	onunload() {}
+	onunload() {
+		// Plugin was disabled
+		this.metronomeAppInstances.forEach((app) => app.unmount());
+	}
 
 	getCodeBlockParameters(src: string): MetronomeCodeBlockParameters {
 		const values: { [key: string]: any } = {};

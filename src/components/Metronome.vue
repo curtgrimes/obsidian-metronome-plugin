@@ -2,10 +2,9 @@
 import { MetronomeCodeBlockParameters } from "../main";
 import MuteToggle from "./MuteToggle.vue";
 import MetronomeToggle from "./MetronomeToggle.vue";
-import { computed, ref, watch, nextTick, toRefs } from "vue";
+import { ref, watch, toRefs, onBeforeUnmount } from "vue";
 import MetronomeIcon from "../components/MetronomeIcon.vue";
 import StyleLine from "../components/StyleLine.vue";
-
 import {
   tick as playTick,
   tickUpbeat as playTickUpbeat,
@@ -13,7 +12,7 @@ import {
   beep as playBeep,
 } from "../sounds";
 import { useTick } from "../hooks/useTick";
-import { MetronomeBPM } from "../models/MetronomeBPM";
+import { useParentMarkdownWrapperVisibilityWatcher } from "../hooks/useParentMarkdownWrapperVisibilityWatcher";
 
 const props = defineProps<{
   bpm: MetronomeCodeBlockParameters["bpm"];
@@ -27,11 +26,14 @@ const props = defineProps<{
   beepTock: MetronomeCodeBlockParameters["beepTock"];
 }>();
 
+const metronome = ref(null);
 const muted = ref(props.muted);
 const started = ref(props.autoStart ?? true);
 const tickColor = ref("");
 const { meter } = toRefs(props);
 const { doBeat, onTick, onTickAlternate, onTock, resetTick } = useTick(meter);
+const parentWrapperIsVisible =
+  useParentMarkdownWrapperVisibilityWatcher(metronome);
 
 // Do sounds
 onTick(
@@ -50,6 +52,31 @@ onTock(
     (props.sound === "beep" ? playBeep(props.beepTock) : playTock())
 );
 
+const emit = defineEmits(["didCreateInterval"]);
+const interval = ref(null);
+
+const startInterval = () =>
+  (interval.value = window.setInterval(
+    doBeat,
+    props.bpm.getBeatDurationSeconds(meter) * 1000
+  ));
+
+const stopInterval = () => clearInterval(interval.value);
+
+watch(
+  [started, parentWrapperIsVisible],
+  () => {
+    if (started.value && parentWrapperIsVisible.value) {
+      startInterval();
+    } else {
+      stopInterval();
+    }
+  },
+  { immediate: true }
+);
+
+onBeforeUnmount(stopInterval);
+
 // Do visuals
 onTick(() => (tickColor.value = "rgba(168, 8, 8, 1)"));
 onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
@@ -57,6 +84,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
 
 <template>
   <div
+    ref="metronome"
     class="metronome"
     :style="{
       '--tick-color': tickColor,
@@ -64,7 +92,6 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     }"
     :data-size="props.size"
     :data-started="started"
-    @animationiteration="(e) => e.animationName.startsWith('metronome-pulse') && doBeat()"
   >
     <div class="style">
       <MetronomeIcon
