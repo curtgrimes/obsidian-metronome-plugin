@@ -19,12 +19,19 @@ export function useParentMarkdownWrapperVisibilityWatcher(
 				  elementRef.value.closest(".markdown-reading-view")
 				: null;
 
+			// We want to consider it still visible if it's
+			// in a sidebar to match the behavior of audio players.
+			const isInSidebar = () =>
+				markdownWrapperParent.closest(
+					".mod-left-split, .mod-right-split"
+				) !== null;
+
 			const { stop } = useIntersectionObserver(
 				markdownWrapperParent as MaybeElementRef,
 				(entries) =>
-					(isVisible.value = entries.some(
-						(entry) => entry.isIntersecting
-					))
+					(isVisible.value =
+						entries.some((entry) => entry.isIntersecting) ||
+						isInSidebar())
 			);
 
 			stopFunction.value = stop;
