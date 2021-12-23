@@ -16,12 +16,12 @@ const haltAnimationStyle = useCSSAnimationSynchronizer({
 </script>
 
 <template>
-  <div style="position:relative;width:100%;height:100%">
+  <div style="position: relative; width: 100%; height: 100%">
     <div
       class="line"
-      :class="{swinging}"
+      :class="{ swinging }"
       ref="line"
-      :style={...haltAnimationStyle}
+      :style="{ ...haltAnimationStyle }"
     ></div>
   </div>
 </template>

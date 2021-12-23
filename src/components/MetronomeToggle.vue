@@ -15,14 +15,11 @@ const emit = defineEmits(["update:modelValue"]);
 
 <template>
   <Button
-    :class="{'enabled': props.modelValue}"
+    :class="{ enabled: props.modelValue }"
     @click="emit('update:modelValue', !props.modelValue)"
     :aria-label="props.modelValue ? 'Stop metronome' : 'Start metronome'"
-    v-bind="{size: props.size}"
+    v-bind="{ size: props.size }"
   >
-    <MetronomeIcon
-      :swinging="props.modelValue"
-      :on-beat="props.onBeat"
-    />
+    <MetronomeIcon :swinging="props.modelValue" :on-beat="props.onBeat" />
   </Button>
 </template>

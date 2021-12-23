@@ -96,7 +96,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     :style="{
       '--tick-color': tickColor,
       '--metronome-duration': `${bpm.getBeatDurationSeconds(meter)}s`,
-      ...haltAnimationStyle
+      ...haltAnimationStyle,
     }"
     :data-size="props.size"
     :data-started="started"
@@ -104,7 +104,7 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     <div class="style">
       <MetronomeIcon
         v-if="props.style === 'pendulum'"
-        style="position: absolute;top: 0;right: 0;bottom: 0;left: 0;"
+        style="position: absolute; top: 0; right: 0; bottom: 0; left: 0"
         :swinging="started"
         :on-beat="onBeat"
       />
@@ -115,12 +115,11 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
       />
     </div>
     <div class="content">
-      <MetronomeToggle
-        v-model="started"
-        :size="props.size"
-        :on-beat="onBeat"
-      />
-      <span class="description"><span v-if="bpm.isSuperFast()">🔥</span> {{bpm}} {{meter && '&middot;'}} {{meter}}</span>
+      <MetronomeToggle v-model="started" :size="props.size" :on-beat="onBeat" />
+      <span class="description"
+        ><span v-if="bpm.isSuperFast()">🔥</span> {{ bpm }}
+        {{ meter && "&middot;" }} {{ meter }}</span
+      >
       <MuteToggle
         v-if="started"
         v-model="muted"

@@ -5,11 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <button
-    class="button"
-    :data-size="props.size || 'small'"
-    v-bind="{size}"
-  >
+  <button class="button" :data-size="props.size || 'small'" v-bind="{ size }">
     <slot />
   </button>
 </template>

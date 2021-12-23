@@ -26,10 +26,10 @@ watch(
 
 <template>
   <Button
-    :class="{'enabled': props.modelValue}"
+    :class="{ enabled: props.modelValue }"
     @click="emit('update:modelValue', !props.modelValue)"
     :aria-label="props.modelValue ? 'Unmute' : 'Mute'"
-    v-bind="{size: props.size}"
+    v-bind="{ size: props.size }"
     v-html="props.modelValue ? VolumeMuteIcon : VolumeUpIcon"
   />
 </template>
