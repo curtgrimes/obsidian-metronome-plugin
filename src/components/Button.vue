@@ -64,7 +64,8 @@ const props = defineProps<{
 
   &:hover,
   &:active {
-    background: rgb(100 100 100 / 30%);
+    background-color: var(--background-modifier-border);
+    color: var(--text-accent-hover);
   }
 
   &:hover,

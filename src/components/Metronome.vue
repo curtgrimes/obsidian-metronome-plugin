@@ -197,6 +197,7 @@ $metronome-resting-background-color: var(--background-primary-alt);
     .microphone-icon {
       width: 1rem;
       height: 1rem;
+      margin-right: 0.25rem;
     }
   }
 
