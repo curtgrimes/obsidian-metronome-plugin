@@ -6,12 +6,7 @@ import MetronomeToggle from "./MetronomeToggle.vue";
 import { ref, watch, toRefs, onBeforeUnmount } from "vue";
 import MetronomeIcon from "../components/MetronomeIcon.vue";
 import StyleLine from "../components/StyleLine.vue";
-import {
-  tick as playTick,
-  tickUpbeat as playTickUpbeat,
-  tock as playTock,
-  beep as playBeep,
-} from "../sounds";
+import { playTick, playTickUpbeat, playTock, playSynth } from "../sounds";
 import { useTick } from "../hooks/useTick";
 import { useParentMarkdownWrapperVisibilityWatcher } from "../hooks/useParentMarkdownWrapperVisibilityWatcher";
 import { useCSSAnimationSynchronizer } from "../hooks/useCSSAnimationSynchronizer";
@@ -23,9 +18,9 @@ const props = defineProps<{
   size: MetronomeCodeBlockParameters["size"];
   style: MetronomeCodeBlockParameters["style"];
   autoStart: MetronomeCodeBlockParameters["autoStart"];
-  sound: MetronomeCodeBlockParameters["sound"];
-  beepTick: MetronomeCodeBlockParameters["beepTick"];
-  beepTock: MetronomeCodeBlockParameters["beepTock"];
+  instrument: MetronomeCodeBlockParameters["instrument"];
+  tickNotes: MetronomeCodeBlockParameters["tickNotes"];
+  tockNotes: MetronomeCodeBlockParameters["tockNotes"];
 }>();
 
 const metronome = ref<HTMLElement>(null);
@@ -47,17 +42,23 @@ const haltAnimationStyle = useCSSAnimationSynchronizer({
 onTick(
   () =>
     !muted.value &&
-    (props.sound === "beep" ? playBeep(props.beepTick) : playTick())
+    (props.instrument === "click"
+      ? playTick()
+      : playSynth(props.tickNotes, props.instrument))
 );
 onTickAlternate(
   () =>
     !muted.value &&
-    (props.sound === "beep" ? playBeep(props.beepTick) : playTickUpbeat())
+    (props.instrument === "click"
+      ? playTickUpbeat()
+      : playSynth(props.tockNotes, props.instrument))
 );
 onTock(
   () =>
     !muted.value &&
-    (props.sound === "beep" ? playBeep(props.beepTock) : playTock())
+    (props.instrument === "click"
+      ? playTock()
+      : playSynth(props.tockNotes, props.instrument))
 );
 
 const emit = defineEmits(["didCreateInterval"]);

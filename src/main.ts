@@ -3,7 +3,10 @@ import Metronome from "./components/Metronome.vue";
 import { App, createApp } from "vue";
 import { Meter } from "./models/Meter";
 import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
-import { MetronomeSound, isMetronomeSound } from "./models/MetronomeSound";
+import {
+	MetronomeInstrument,
+	isMetronomeInstrument,
+} from "./models/MetronomeInstrument";
 import { MetronomeStyle, isMetronomeStyle } from "./models/MetronomeStyle";
 import { Frequency } from "tone/build/esm/core/type/Units";
 import { MetronomeBPM } from "./models/MetronomeBPM";
@@ -15,9 +18,9 @@ export interface MetronomeCodeBlockParameters {
 	size: MetronomeSize;
 	style: MetronomeStyle;
 	autoStart: boolean;
-	sound: MetronomeSound;
-	beepTick: Frequency[];
-	beepTock: Frequency[];
+	instrument: MetronomeInstrument;
+	tickNotes: Frequency[];
+	tockNotes: Frequency[];
 }
 
 export default class MetronomePlugin extends Plugin {
@@ -82,11 +85,13 @@ export default class MetronomePlugin extends Plugin {
 			size: isMetronomeSize(values.size) ? values.size : "small",
 			style: isMetronomeStyle(values.style) ? values.style : "pulse",
 			autoStart: values.autostart ? values.autoStart === "yes" : null,
-			sound: isMetronomeSound(values.sound) ? values.sound : "click",
-			beepTick: parseMaybeCommaSeparatedToArray(values.beeptick) || [
+			instrument: isMetronomeInstrument(values.instrument)
+				? values.instrument
+				: "click",
+			tickNotes: parseMaybeCommaSeparatedToArray(values.ticknotes) || [
 				"C6",
 			],
-			beepTock: parseMaybeCommaSeparatedToArray(values.beeptock) || [
+			tockNotes: parseMaybeCommaSeparatedToArray(values.tocknotes) || [
 				"C5",
 			],
 		};
