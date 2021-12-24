@@ -60,9 +60,11 @@ export default class MetronomePlugin extends Plugin {
 
 		src.split("\n")
 			.map((line: string) => line.split(":"))
-			.forEach(([key, value]: [string, string]) => {
-				values[key] = (value || "").trim();
-			});
+			.forEach(
+				([key, value]: [string, string]) =>
+					// Make case-insensitive just for ease of use
+					(values[key.toLowerCase()] = (value || "").trim())
+			);
 
 		const parseMaybeCommaSeparatedToArray = (
 			maybeCommaSeparated: string
@@ -73,17 +75,18 @@ export default class MetronomePlugin extends Plugin {
 				: false;
 
 		return {
+			// Remember: use lowercase versions of values.* properties
 			bpm: new MetronomeBPM(values.bpm),
 			muted: values.muted ? values.muted === "yes" : true,
 			meter: values.meter ? Meter.fromString(values.meter) : null,
 			size: isMetronomeSize(values.size) ? values.size : "small",
 			style: isMetronomeStyle(values.style) ? values.style : "pulse",
-			autoStart: values.autoStart ? values.autoStart === "yes" : null,
+			autoStart: values.autostart ? values.autoStart === "yes" : null,
 			sound: isMetronomeSound(values.sound) ? values.sound : "click",
-			beepTick: parseMaybeCommaSeparatedToArray(values.beepTick) || [
+			beepTick: parseMaybeCommaSeparatedToArray(values.beeptick) || [
 				"C6",
 			],
-			beepTock: parseMaybeCommaSeparatedToArray(values.beepTock) || [
+			beepTock: parseMaybeCommaSeparatedToArray(values.beeptock) || [
 				"C5",
 			],
 		};
