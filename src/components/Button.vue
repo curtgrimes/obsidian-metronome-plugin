@@ -1,11 +1,17 @@
 <script setup lang="ts">
 const props = defineProps<{
   size?: "small" | "medium" | "large";
+  disabled?: boolean;
 }>();
 </script>
 
 <template>
-  <button class="button" :data-size="props.size || 'small'" v-bind="{ size }">
+  <button
+    class="button"
+    :disabled="disabled"
+    :data-size="props.size || 'small'"
+    v-bind="{ size, ...$props }"
+  >
     <slot />
   </button>
 </template>
@@ -21,11 +27,16 @@ const props = defineProps<{
   box-shadow: none !important;
   border-radius: 0.2rem;
   opacity: 0.5;
-  width: 1.75rem;
+  width: 2.5rem;
   height: 1.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
+
+  &[disabled] {
+    pointer-events: none;
+  }
 
   &[data-size="medium"] {
     width: 2rem;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { MetronomeCodeBlockParameters } from "../main";
+import Button from "./Button.vue";
 import MuteToggle from "./MuteToggle.vue";
 import MetronomeToggle from "./MetronomeToggle.vue";
 import { ref, watch, toRefs, onBeforeUnmount } from "vue";
@@ -101,7 +102,13 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
     :data-size="props.size"
     :data-started="started"
   >
-    <div class="style">
+    <button
+      class="toggle-on-off-button"
+      :aria-label="started ? 'Stop metronome' : 'Start metronome'"
+      aria-label-position="top"
+      @click="started = !started"
+    ></button>
+    <div class="styleContainer">
       <MetronomeIcon
         v-if="props.style === 'pendulum'"
         style="position: absolute; top: 0; right: 0; bottom: 0; left: 0"
@@ -115,35 +122,21 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
       />
     </div>
     <div class="content">
-      <MetronomeToggle v-model="started" :size="props.size" :on-beat="onBeat" />
+      <MuteToggle v-model="muted" :size="props.size" @unmuted="resetTick" />
+      <Button disabled style="width: 1.5rem; padding-left: 0; padding-right: 0">
+        <MetronomeIcon :swinging="started" :on-beat="onBeat" />
+      </Button>
       <span class="description"
         ><span v-if="bpm.isSuperFast()">🔥</span> {{ bpm }}
         {{ meter && "&middot;" }} {{ meter }}</span
       >
-      <MuteToggle
-        v-if="started"
-        v-model="muted"
-        :size="props.size"
-        @unmuted="resetTick"
-      />
     </div>
   </div>
 </template>
 
-<style lang="scss">
-// Move the mute button slightly out of the way of the edit button that overlays
-// the component in live preview mode
-.is-live-preview .block-language-metronome .metronome[data-size="small"] {
-  transition: margin 0.25s;
-
-  &:hover {
-    margin-right: 2rem;
-  }
-}
-</style>
-
 <style lang="scss" scoped>
 .metronome {
+  z-index: 0;
   border-radius: 0.25rem;
   animation: metronome-pulse var(--metronome-duration) var(--sync-delay, "0s")
     infinite;
@@ -153,6 +146,24 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
   align-items: center;
   justify-content: flex-end;
   font-size: 0.68rem;
+
+  .toggle-on-off-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    transition: background-color 100ms;
+
+    &:hover {
+      background-color: rgba(150, 150, 150, 0.1);
+    }
+  }
 
   &[data-started="false"] {
     background: var(--scrollbar-bg);
@@ -197,11 +208,11 @@ onTock(() => (tickColor.value = "rgba(100, 100, 100, .75)"));
   .description {
     font-weight: bold;
     margin-right: auto;
-    padding: 0 0.25rem;
+    padding: 0 0.25rem 0 0;
     opacity: 0.5;
   }
 
-  .style {
+  .styleContainer {
     height: 100%;
     width: 100%;
     position: relative;
