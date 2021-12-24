@@ -24,6 +24,7 @@ const haltAnimationStyle = useCSSAnimationSynchronizer({
     fill="currentColor"
     viewBox="0 0 16 16"
     ref="metronomeIconElement"
+    class="metronome-icon"
   >
     <path
       d="M9.867,2.646C9.832,2.47 9.695,2.333 9.52,2.295C8.507,2.08 7.494,2.083 6.482,2.295C6.306,2.332 6.168,2.47 6.133,2.646L3.998,13.175C3.971,13.307 4.005,13.445 4.091,13.549C4.176,13.654 4.304,13.715 4.439,13.715L11.561,13.715C11.696,13.715 11.824,13.654 11.909,13.549C11.995,13.445 12.029,13.307 12.002,13.175L9.867,2.646ZM10.492,10.257L11.01,12.815C11.01,12.815 4.99,12.815 4.99,12.815L5.508,10.257L10.492,10.257ZM10.309,9.357L5.691,9.357L6.954,3.122C7.651,3.008 8.348,3.006 9.045,3.121L9.045,3.121L10.309,9.357Z"
@@ -40,6 +41,10 @@ const haltAnimationStyle = useCSSAnimationSynchronizer({
 </template>
 
 <style lang="scss" scoped>
+.metronome-icon {
+  color: var(--text-normal);
+}
+
 .metronome-metronome[data-started="false"] .pendulum {
   animation: none;
 }

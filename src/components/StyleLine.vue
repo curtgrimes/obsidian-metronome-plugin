@@ -36,7 +36,7 @@ $width: 10px;
   bottom: 0;
   left: 0;
   width: $width;
-  background: #fff;
+  background: var(--text-normal);
   border-radius: 10rem;
 
   &.swinging {
@@ -49,21 +49,17 @@ $width: 10px;
   0%,
   100% {
     left: calc(100% - #{$width});
-    background: rgba(255, 255, 255, 1);
-    box-shadow: 0 0 30px #fff;
   }
 
   2%,
   48%,
   52%,
   98% {
-    background: rgba(255, 255, 255, 0.4);
-    box-shadow: none;
+    /* If I want to have an effect right before it hits an edge */
   }
 
   50% {
     left: 0%;
-    background: rgba(255, 255, 255, 1);
   }
 }
 </style>

@@ -10,7 +10,7 @@ const props = defineProps<{
     class="button"
     :disabled="disabled"
     :data-size="props.size || 'small'"
-    v-bind="{ size, ...$props }"
+    v-bind="{ size }"
   >
     <slot />
   </button>
@@ -26,13 +26,13 @@ const props = defineProps<{
   outline: 0 !important;
   box-shadow: none !important;
   border-radius: 0.2rem;
-  opacity: 0.5;
   width: 2.5rem;
   height: 1.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  color: var(--text-normal);
 
   &[disabled] {
     pointer-events: none;
@@ -45,13 +45,13 @@ const props = defineProps<{
   }
 
   &[data-size="large"] {
-    width: 2.3rem;
+    width: 2.5rem;
     height: 2.3rem;
     padding: 0.25rem;
   }
 
   &[data-size="xlarge"] {
-    width: 3.5rem;
+    width: 4rem;
     height: 3.5rem;
     padding: 0.35rem;
   }
