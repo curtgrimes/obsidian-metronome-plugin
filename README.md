@@ -221,16 +221,20 @@ style: line
 
 ### Works with themes
 
-The metronome works great with Obsidian's themes in light or dark mode.
+The metronome works great with Obsidian's community themes in light or dark mode.
 
-Theme: Obsidian Default (Dark)
+#### Theme: Obsidian Default (dark mode)
 
 ![](images/demo-theme-obsidian-dark.gif)
 
-Theme: Minimal (Light)
+#### Theme: [Minimal](https://github.com/kepano/obsidian-minimal) (light mode)
 
 ![](images/demo-theme-minimal-light.gif)
 
-Theme: [Obsidian Atom](https://github.com/kognise/obsidian-atom) (Dark)
+#### Theme: [Obsidian Atom](https://github.com/kognise/obsidian-atom) (dark mode)
 
 ![](images/demo-theme-atom-dark.gif)
+
+#### Theme: [Cecilia May Primary](https://github.com/ceciliamay/obsidianmd-theme-primary) (light mode)
+
+![](images/demo-theme-cecilia-may-primary-light.gif)

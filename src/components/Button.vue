@@ -18,9 +18,10 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .button {
-  background: none;
-  border: none;
-  padding: 0.25rem;
+  /* using !important because some themes may try to override these */
+  background: none !important;
+  border: none !important;
+  padding: 0.25rem !important;
   margin: 0;
   cursor: pointer;
   outline: 0 !important;

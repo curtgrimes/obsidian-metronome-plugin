@@ -161,14 +161,16 @@ $metronome-resting-background-color: var(--background-primary-alt);
   color: var(--text-normal);
 
   .toggle-on-off-button {
+    /* using !important because some themes may try to override these */
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     width: 100%;
-    background: none;
-    border: none;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
     cursor: pointer;
     z-index: 1;
     transition: background-color 100ms;
