@@ -16,7 +16,8 @@ export function useParentMarkdownWrapperVisibilityWatcher(
 
 			const markdownWrapperParent = elementRef.value
 				? elementRef.value.closest(".markdown-source-view") ||
-				  elementRef.value.closest(".markdown-reading-view")
+				  elementRef.value.closest(".markdown-reading-view") ||
+				  elementRef.value.closest(".markdown-preview-view") // v0.12.19 compatibility
 				: null;
 
 			// We want to consider it still visible if it's
