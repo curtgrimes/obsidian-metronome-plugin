@@ -16,8 +16,8 @@ export interface MetronomeCodeBlockParameters {
 	style: MetronomeStyle;
 	autoStart: boolean;
 	sound: MetronomeSound;
-	beepTick: Frequency;
-	beepTock: Frequency;
+	beepTick: Frequency[];
+	beepTock: Frequency[];
 }
 
 export default class MetronomePlugin extends Plugin {
@@ -64,6 +64,14 @@ export default class MetronomePlugin extends Plugin {
 				values[key] = (value || "").trim();
 			});
 
+		const parseMaybeCommaSeparatedToArray = (
+			maybeCommaSeparated: string
+		): string[] | false =>
+			typeof maybeCommaSeparated === "string" &&
+			maybeCommaSeparated.split(",").length > 0
+				? maybeCommaSeparated.split(",")
+				: false;
+
 		return {
 			bpm: new MetronomeBPM(values.bpm),
 			muted: values.muted ? values.muted === "yes" : true,
@@ -72,8 +80,12 @@ export default class MetronomePlugin extends Plugin {
 			style: isMetronomeStyle(values.style) ? values.style : "pulse",
 			autoStart: values.autoStart ? values.autoStart === "yes" : null,
 			sound: isMetronomeSound(values.sound) ? values.sound : "click",
-			beepTick: values.beepTick || "C6",
-			beepTock: values.beepTock || "C5",
+			beepTick: parseMaybeCommaSeparatedToArray(values.beepTick) || [
+				"C6",
+			],
+			beepTock: parseMaybeCommaSeparatedToArray(values.beepTock) || [
+				"C5",
+			],
 		};
 	}
 }

@@ -49,17 +49,17 @@ beepTock: A4
 
 These are all the options you can change when creating a metronome. Only the `bpm` option is required.
 
-| Option      | Type                                    | Description                                                                                                                                                                                                                                                                               | Default    |
-| ----------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `bpm`       | number                                  | Tempo in [beats per minute](https://en.wikipedia.org/wiki/Tempo). Must be greater than 0.                                                                                                                                                                                                 | (required) |
-| `meter`     | string                                  | The [time signature](https://en.wikipedia.org/wiki/Time_signature) (meter) to play in. The bottom number must be 1, 2, 4, 8, 16, 32, or 64. Examples: 4/4, 3/4, 6/8, 12/8.                                                                                                                | `4/4`      |
-| `muted`     | `yes` or `no`                           | Whether or not the metronome's audio starts muted.                                                                                                                                                                                                                                        | `yes`      |
-| `autoStart` | `yes` or `no`                           | Whether or not the metronome starts flashing visually right away. If `autoStart` is `yes` and `muted` is `no`, then the metronome's sound will also start playing immediately.                                                                                                            | `yes`      |
-| `size`      | `small`, `medium`, `large`, or `xlarge` | Control the size of the metronome in the note.                                                                                                                                                                                                                                            | `small`    |
-| `style`     | `pulse`, `pendulum`, `line`             | Control the style of the metronome. `pulse` makes the whole area flash color. `pendulum` shows an illustration of a metronome with a swinging pendulum (works best with `large` and up sizes). `line` shows a vertical line moving left and right (works best with `large` and up sizes). | `pulse`    |
-| `sound`     | `click` or `beep`                       | Control whether the metronome clicks or beeps when unmuted.                                                                                                                                                                                                                               | `click`    |
-| `beepTick`  | string                                  | When `sound` is set to `beep`, this determines the pitch of the **downbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) If there is no meter, every beat is considered a downbeat.                | `C6`       |
-| `beepTock`  | string                                  | When `sound` is set to `beep`, this determines the pitch of the **upbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) If there is no meter, every beat is considered a downbeat.                  | `C5`       |
+| Option      | Type                                    | Description                                                                                                                                                                                                                                                                                                                                                            | Default              |
+| ----------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `bpm`       | number                                  | Tempo in [beats per minute](https://en.wikipedia.org/wiki/Tempo). Must be greater than 0.                                                                                                                                                                                                                                                                              | (required)           |
+| `meter`     | string                                  | The [time signature](https://en.wikipedia.org/wiki/Time_signature) (meter) to play in. The bottom number must be 1, 2, 4, 8, 16, 32, or 64. Examples: 4/4, 3/4, 6/8, 12/8.                                                                                                                                                                                             | `4/4`                |
+| `muted`     | `yes` or `no`                           | Whether or not the metronome's audio starts muted.                                                                                                                                                                                                                                                                                                                     | `yes`                |
+| `autoStart` | `yes` or `no`                           | Whether or not the metronome starts flashing visually right away. If `autoStart` is `yes` and `muted` is `no`, then the metronome's sound will also start playing immediately.                                                                                                                                                                                         | `yes`                |
+| `size`      | `small`, `medium`, `large`, or `xlarge` | Control the size of the metronome in the note.                                                                                                                                                                                                                                                                                                                         | `small`              |
+| `style`     | `pulse`, `pendulum`, `line`             | Control the style of the metronome. `pulse` makes the whole area flash color. `pendulum` shows an illustration of a metronome with a swinging pendulum (works best with `large` and up sizes). `line` shows a vertical line moving left and right (works best with `large` and up sizes).                                                                              | `pulse`              |
+| `sound`     | `click` or `beep`                       | Control whether the metronome clicks or beeps when unmuted.                                                                                                                                                                                                                                                                                                            | `click`              |
+| `beepTick`  | string                                  | When `sound` is set to `beep`, this determines the pitch of the **downbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. | `C6`<br/>`F5,A5,C5`  |
+| `beepTock`  | string                                  | When `sound` is set to `beep`, this determines the pitch of the **upbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat.   | `C5`<br/>`F4,A4,C4 ` |
 
 ## Examples
 
@@ -75,7 +75,21 @@ The metronome works great when placed alongside music notation using the [obsidi
 
 ![](images/demo-5.gif)
 
-## `pulse` style (default)
+### Play multiple tones at once
+
+Set `beepTick` and `beepTock` to a comma-separated list of tones to play those tones all at once in a chord.
+
+````markdown
+```metronome
+bpm: 80
+meter: 4/4
+sound:beep
+beepTick: F4,A4,C4
+beepTock: D4,F4,A4
+```
+````
+
+### `pulse` style (default)
 
 ````markdown
 ```metronome
@@ -88,7 +102,7 @@ style: pulse
 
 ![](images/demo-6.gif)
 
-## `pendulum` style
+### `pendulum` style
 
 Works best on `large` and `xlarge` sizes.
 
@@ -103,7 +117,7 @@ style: pendulum
 
 ![](images/demo-7.gif)
 
-## `line` style
+### `line` style
 
 ![](images/demo-8.gif)
 
