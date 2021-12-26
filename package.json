@@ -13,7 +13,7 @@
 	"devDependencies": {
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "^5.2.0",
-		"@typescript-eslint/parser": "^5.2.0",
+		"@typescript-eslint/parser": "^5.8.0",
 		"@vapurrmaid/bpm": "^0.1.8",
 		"@vueuse/core": "^7.4.0",
 		"builtin-modules": "^3.2.0",
@@ -22,6 +22,8 @@
 		"esbuild-plugin-vue3": "^0.3.0",
 		"eslint": "^8.5.0",
 		"eslint-config-prettier": "^8.3.0",
+		"eslint-import-resolver-alias": "^1.1.2",
+		"eslint-plugin-import": "^2.25.3",
 		"eslint-plugin-vue": "^8.2.0",
 		"obsidian": "^0.12.17",
 		"stylelint": "^14.1.0",

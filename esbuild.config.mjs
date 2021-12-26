@@ -1,4 +1,4 @@
-import esbuild from "esbuild";
+import * as esbuild from "esbuild";
 import process from "process";
 import builtins from 'builtin-modules';
 import vuePlugin from 'esbuild-plugin-vue3';

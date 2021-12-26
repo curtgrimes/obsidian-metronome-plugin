@@ -1,15 +1,15 @@
 import { MarkdownPostProcessor, MarkdownRenderChild, Plugin } from "obsidian";
-import Metronome from "./components/Metronome.vue";
+import Metronome from "@/components/Metronome.vue";
+import { Frequency } from "tone/build/esm/core/type/Units";
+import { MetronomeBPM } from "@/models/MetronomeBPM";
 import { App, createApp } from "vue";
-import { Meter } from "./models/Meter";
-import { MetronomeSize, isMetronomeSize } from "./models/MetronomeSize";
+import { Meter } from "@/models/Meter";
+import { MetronomeSize, isMetronomeSize } from "@/models/MetronomeSize";
 import {
 	MetronomeInstrument,
 	isMetronomeInstrument,
 } from "./models/MetronomeInstrument";
-import { MetronomeStyle, isMetronomeStyle } from "./models/MetronomeStyle";
-import { Frequency } from "tone/build/esm/core/type/Units";
-import { MetronomeBPM } from "./models/MetronomeBPM";
+import { MetronomeStyle, isMetronomeStyle } from "@/models/MetronomeStyle";
 
 export interface MetronomeCodeBlockParameters {
 	bpm: MetronomeBPM;
@@ -59,6 +59,7 @@ export default class MetronomePlugin extends Plugin {
 	}
 
 	getCodeBlockParameters(src: string): MetronomeCodeBlockParameters {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const values: { [key: string]: any } = {};
 
 		src.split("\n")

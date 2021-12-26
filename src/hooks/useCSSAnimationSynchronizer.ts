@@ -1,27 +1,6 @@
 import { computed, ComputedRef, onBeforeUnmount, Ref, ref } from "vue";
 import { useIntersectionObserver } from "@vueuse/core";
 
-// Use this to restart a CSS animation after an element
-// becomes visible again according to when the onBeat
-// function fires.
-//
-// An element that supports this needs to honor the
-// --sync-delay CSS variable in their animation like this:
-//
-// .metronome {
-//     animation:
-//          metronome-pulse
-//          var(--metronome-duration)
-//          var(--sync-delay, "0s")
-//          infinite;
-// }
-//
-// This returns an object that should be applied to the
-// element as a style. Example:
-//
-// const haltAnimationStyle = useCSSAnimationSynchronizer(metronome, onBeat);
-// <div class="metronome" :style={...haltAnimationStyle}></div>
-
 /**
  * Restart a CSS animation after an element becomes visible again according to when the onBeat
  * function fires.
@@ -55,7 +34,7 @@ export function useCSSAnimationSynchronizer({
 	synchronizeElement: Ref<HTMLElement>;
 	onBeat: CallableFunction;
 	observeVisibilityElement?: Ref<HTMLElement>;
-}): ComputedRef<object> {
+}): { haltAnimationStyle: ComputedRef<object> } {
 	// If we weren't given an element to observe visibility on, default to the given
 	// elementWithAnimationToSynchronize. This will be different elements in the case
 	// that we want to synchronize something inside an SVG (IntersectionObserver doesn't
@@ -107,5 +86,5 @@ export function useCSSAnimationSynchronizer({
 
 	onBeforeUnmount(stop);
 
-	return haltAnimationStyle;
+	return { haltAnimationStyle };
 }
