@@ -26,6 +26,7 @@
 		"eslint-plugin-import": "^2.25.3",
 		"eslint-plugin-vue": "^8.2.0",
 		"obsidian": "^0.12.17",
+		"sass": "^1.45.1",
 		"stylelint": "^14.1.0",
 		"stylelint-config-standard": "^24.0.0",
 		"tone": "^14.8.32",
