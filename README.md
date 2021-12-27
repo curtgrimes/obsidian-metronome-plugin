@@ -73,7 +73,7 @@ These are all the options you can change when creating a metronome. Only the `bp
 | `muted`      | `yes` or `no`                                                                                                  | Whether or not the metronome's audio starts muted.                                                                                                                                                                                                                                                                                                                                           | `yes`                |
 | `autoStart`  | `yes` or `no`                                                                                                  | Whether or not the metronome starts flashing visually right away. If `autoStart` is `yes` and `muted` is `no`, then the metronome's sound will also start playing immediately.                                                                                                                                                                                                               | `yes`                |
 | `size`       | `small`, `medium`, `large`, or `xlarge`                                                                        | Control the size of the metronome in the note.                                                                                                                                                                                                                                                                                                                                               | `small`              |
-| `style`      | `pulse`, `pendulum`, `line`                                                                                    | Control the style of the metronome. `pulse` makes the whole area flash color. `pendulum` shows an illustration of a metronome with a swinging pendulum (works best with `large` and up sizes). `line` shows a vertical line moving left and right (works best with `large` and up sizes).                                                                                                    | `pulse`              |
+| `style`      | `pulse`, `pendulum`, `line`, `dots`                                                                            | Control the style of the metronome. `pulse` makes the whole area flash color. `pendulum` shows an illustration of a metronome with a swinging pendulum. `line` shows a vertical line moving left and right. `dots` shows dots. Only `pulse` is available when `size` is `small`. The other styles are only available on `size` = `medium` and up.                                            | `pulse`              |
 | `instrument` | `click`, `beep`, `AMSynth`, `DuoSynth`, `FMSynth`, `MembraneSynth`, `MetalSynth`, `MonoSynth`, or `PluckSynth` | Change the metronome's instrument.                                                                                                                                                                                                                                                                                                                                                           | `click`              |
 | `tickNotes`  | string                                                                                                         | This determines the note(s) played on the **downbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when `instrument` is `click`. | `C6`<br/>`F5,A5,C5`  |
 | `tockNotes`  | string                                                                                                         | This determines the note(s) played on the **upbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when `instrument` is `click`.   | `C5`<br/>`F4,A4,C4 ` |
@@ -218,6 +218,21 @@ style: line
 ````
 
 ![](images/demo-8.gif)
+
+### `dots` style
+
+````markdown
+```metronome
+bpm: 86
+meter: 3/4
+size: large
+style: dots
+```
+````
+
+_Theme: [Solarized](https://github.com/Slowbad/obsidian-solarized) (dark)_
+
+![](images/demo-style-dots.gif)
 
 ### Works with themes
 

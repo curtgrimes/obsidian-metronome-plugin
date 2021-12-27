@@ -8,12 +8,16 @@ export function useTick(meter: Ref<Meter>) {
 
 	const resetTick = () => (resetAfterNextBeat.value = true);
 
+	const currentBeat = computed(() =>
+		meter.value?.isValid()
+			? beatCount.value % meter.value.upper
+			: beatCount.value % 2
+	);
+
 	const currentBeatIsTick = computed(
 		() =>
 			// Every beat is a tick if we don't have a valid meter
-			!meter.value ||
-			!meter.value.isValid() ||
-			beatCount.value % meter.value.upper === 0
+			!meter.value || !meter.value.isValid() || currentBeat.value === 0
 	);
 
 	const currentBeatIsTickAlternate = computed(
@@ -110,5 +114,6 @@ export function useTick(meter: Ref<Meter>) {
 		onTickAlternate,
 		onTock,
 		resetTick,
+		currentBeat,
 	};
 }

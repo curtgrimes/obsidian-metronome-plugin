@@ -1,5 +1,25 @@
+<script setup lang="ts">
+import PulseVisualization from "./visualizations/PulseVisualization.vue";
+
+const props = defineProps<{
+	started: boolean;
+	onBeat: CallableFunction;
+	onTick: CallableFunction;
+	onTock: CallableFunction;
+}>();
+</script>
+
 <template>
-	<div class="controls"><slot /></div>
+	<div class="controls">
+		<slot />
+		<PulseVisualization
+			style="opacity: 0.3"
+			:started="props.started"
+			:on-beat="props.onBeat"
+			:on-tick="props.onTick"
+			:on-tock="props.onTock"
+		/>
+	</div>
 </template>
 
 <style lang="scss" scoped>

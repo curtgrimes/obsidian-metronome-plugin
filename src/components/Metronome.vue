@@ -5,7 +5,16 @@ import Controls from "./Controls.vue";
 import Status from "./Status.vue";
 import MuteToggle from "./MuteToggle.vue";
 import Visualization from "./visualizations/Visualization.vue";
-import { ref, watch, toRefs, onBeforeUnmount, CSSProperties } from "vue";
+import {
+	ref,
+	watch,
+	toRefs,
+	onBeforeUnmount,
+	CSSProperties,
+	computed,
+	Ref,
+	StyleValue,
+} from "vue";
 import { playTick, playTickUpbeat, playTock, playSynth } from "../sounds";
 import { useTick } from "../hooks/useTick";
 import { useParentMarkdownWrapperVisibilityWatcher } from "../hooks/useParentMarkdownWrapperVisibilityWatcher";
@@ -26,10 +35,16 @@ const props = defineProps<{
 const metronome = ref<HTMLElement>(null);
 const muted = ref(props.muted);
 const started = ref(props.autoStart ?? true);
-const tickColor = ref("");
 const { meter } = toRefs(props);
-const { doBeat, onBeat, onTick, onTickAlternate, onTock, resetTick } =
-	useTick(meter);
+const {
+	doBeat,
+	onBeat,
+	onTick,
+	onTickAlternate,
+	onTock,
+	resetTick,
+	currentBeat,
+} = useTick(meter);
 const parentWrapperIsVisible =
 	useParentMarkdownWrapperVisibilityWatcher(metronome);
 
@@ -85,24 +100,18 @@ watch(
 );
 
 onBeforeUnmount(stopInterval);
-
-// Do visuals
-onTick(() => (tickColor.value = "var(--text-accent)"));
-onTock(() => (tickColor.value = "var(--text-faint)"));
-
-const getMetronomeStyle = () =>
-	({
-		"--tick-color": tickColor,
-		"--metronome-duration": `${props.bpm.getBeatDurationSeconds(meter)}s`,
-		...haltAnimationStyle,
-	} as CSSProperties);
 </script>
 
 <template>
 	<div
 		ref="metronome"
 		class="metronome"
-		:style="getMetronomeStyle()"
+		:style="{
+			'--metronome-duration': `${props.bpm.getBeatDurationSeconds(
+				meter
+			)}s`,
+			...haltAnimationStyle,
+		}"
 		:data-size="props.size"
 		:data-started="started"
 	>
@@ -111,8 +120,18 @@ const getMetronomeStyle = () =>
 			:visualization="props.style"
 			:started="started"
 			:on-beat="onBeat"
+			:meter="props.meter"
+			:current-beat="currentBeat"
+			:size="props.size"
+			:on-tick="onTick"
+			:on-tock="onTock"
 		/>
-		<Controls>
+		<Controls
+			:started="started"
+			:on-beat="onBeat"
+			:on-tick="onTick"
+			:on-tock="onTock"
+		>
 			<MuteToggle
 				v-model="muted"
 				:size="props.size"
@@ -134,8 +153,7 @@ $metronome-resting-background-color: var(--background-primary-alt);
 .metronome {
 	z-index: 0;
 	border-radius: 0.25rem;
-	animation: metronome-pulse var(--metronome-duration) var(--sync-delay, "0s")
-		infinite;
+	overflow: hidden;
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -144,21 +162,6 @@ $metronome-resting-background-color: var(--background-primary-alt);
 	font-size: 0.68rem;
 	background-color: $metronome-resting-background-color;
 	color: var(--text-normal);
-
-	&[data-started="false"] {
-		background: var(--scrollbar-bg);
-		animation: none;
-	}
-
-	@keyframes metronome-pulse {
-		0% {
-			background-color: var(--tick-color);
-		}
-
-		100% {
-			background-color: $metronome-resting-background-color;
-		}
-	}
 
 	/* Sizes: ["small" (default), "medium", "large"] */
 	&[data-size="medium"] {
