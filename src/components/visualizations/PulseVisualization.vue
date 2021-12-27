@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCSSAnimationSynchronizer } from "../../hooks/useCSSAnimationSynchronizer";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 const props = defineProps<{
 	started: boolean;
 	onBeat: CallableFunction;
@@ -8,12 +8,23 @@ const props = defineProps<{
 	onTock: CallableFunction;
 }>();
 
+const RESYNC_AFTER_ITERATION_COUNT = 10;
+const iterationsUntilResync = ref(RESYNC_AFTER_ITERATION_COUNT);
+props.onBeat(() => iterationsUntilResync.value--);
+
 const rootElement = ref(null);
 const tickColor = ref("");
 
-const { haltAnimationStyle } = useCSSAnimationSynchronizer({
+const { haltAnimationStyle, forceResync } = useCSSAnimationSynchronizer({
 	synchronizeElement: rootElement,
 	onBeat: props.onBeat,
+});
+
+watch(iterationsUntilResync, () => {
+	if (iterationsUntilResync.value === 0) {
+		forceResync();
+		iterationsUntilResync.value = RESYNC_AFTER_ITERATION_COUNT;
+	}
 });
 
 props.onTick(() => (tickColor.value = "var(--text-accent)"));
@@ -26,6 +37,7 @@ props.onTock(() => (tickColor.value = "var(--text-faint)"));
 		ref="rootElement"
 		:style="{
 			'--tick-color': tickColor,
+			...haltAnimationStyle,
 		}"
 		:data-started="props.started"
 	></div>

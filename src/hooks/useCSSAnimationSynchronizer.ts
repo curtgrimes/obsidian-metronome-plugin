@@ -34,7 +34,7 @@ export function useCSSAnimationSynchronizer({
 	synchronizeElement: Ref<HTMLElement>;
 	onBeat: CallableFunction;
 	observeVisibilityElement?: Ref<HTMLElement>;
-}): { haltAnimationStyle: ComputedRef<object> } {
+}): { haltAnimationStyle: ComputedRef<object>; forceResync: CallableFunction } {
 	// If we weren't given an element to observe visibility on, default to the given
 	// elementWithAnimationToSynchronize. This will be different elements in the case
 	// that we want to synchronize something inside an SVG (IntersectionObserver doesn't
@@ -84,7 +84,9 @@ export function useCSSAnimationSynchronizer({
 		}
 	});
 
+	const forceResync = () => (needsSync.value = true);
+
 	onBeforeUnmount(stop);
 
-	return { haltAnimationStyle };
+	return { haltAnimationStyle, forceResync };
 }
