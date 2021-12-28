@@ -79,11 +79,14 @@ onTock(
 const emit = defineEmits(["didCreateInterval"]);
 const interval = ref(null);
 
-const startInterval = () =>
-	(interval.value = window.setInterval(
-		doBeat,
-		props.bpm.getBeatDurationSeconds(meter) * 1000
-	));
+const startInterval = () => {
+	if (props.bpm.isValid()) {
+		interval.value = window.setInterval(
+			doBeat,
+			props.bpm.getBeatDurationSeconds(meter) * 1000
+		);
+	}
+};
 
 const stopInterval = () => clearInterval(interval.value);
 

@@ -3,11 +3,19 @@ import { Ref } from "vue";
 import t from "../i18n/locale";
 import { Meter } from "./Meter";
 
+// @ts-ignore
+import { evalExpression } from "@hkh12/node-calc";
+
 export class MetronomeBPM {
 	bpm: number;
 
 	constructor(bpm: number | string) {
-		this.bpm = parseFloat(bpm as string);
+		try {
+			this.bpm = evalExpression(bpm);
+		} catch (e) {
+			console.error("Could not calculate BPM", e);
+			this.bpm = NaN;
+		}
 	}
 
 	getBeatDurationSeconds(meter: Ref<Meter>): number {
@@ -15,7 +23,7 @@ export class MetronomeBPM {
 			? new BPM(this.bpm || 0).durationFor(
 					meter?.value?.noteDuration() || "quarter"
 			  )
-			: Number.MAX_SAFE_INTEGER;
+			: 999;
 	}
 
 	isValid() {

@@ -11,6 +11,7 @@
 	"author": "",
 	"license": "MIT",
 	"devDependencies": {
+		"@hkh12/node-calc": "^4.2.1",
 		"@types/node": "^17.0.5",
 		"@typescript-eslint/eslint-plugin": "^5.8.0",
 		"@typescript-eslint/parser": "^5.8.0",
