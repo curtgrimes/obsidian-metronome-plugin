@@ -1,4 +1,5 @@
 import { NoteDuration } from "@vapurrmaid/bpm";
+import t from "../i18n/locale";
 
 export class Meter {
 	upper: number;
@@ -42,7 +43,7 @@ export class Meter {
 	toString() {
 		return this.isValid() && this.noteDuration()
 			? `${this.upper}/${this.lower}`
-			: "Invalid or unsupported meter";
+			: t("Invalid or unsupported meter");
 	}
 
 	static fromString(unparsedMeterString: string) {

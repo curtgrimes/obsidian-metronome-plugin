@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import t from "../i18n/locale";
+
 const props = defineProps<{
 	started?: Boolean;
 }>();
@@ -7,7 +9,7 @@ const props = defineProps<{
 <template>
 	<button
 		class="overlay-toggle"
-		:aria-label="started ? 'Stop metronome' : 'Start metronome'"
+		:aria-label="started ? t('Stop metronome') : t('Start metronome')"
 		aria-label-position="top"
 	></button>
 </template>

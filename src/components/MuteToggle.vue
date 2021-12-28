@@ -4,6 +4,7 @@ import VolumeUpIcon from "../assets/icons/volume-up.svg";
 import VolumeMuteIcon from "../assets/icons/volume-mute.svg";
 import Button from "./Button.vue";
 import type { MetronomeSize } from "../models/MetronomeSize";
+import t from "../i18n/locale";
 
 const props = defineProps<{
 	modelValue?: Boolean;
@@ -28,7 +29,7 @@ watch(
 	<Button
 		:class="{ enabled: props.modelValue }"
 		@click="emit('update:modelValue', !props.modelValue)"
-		:aria-label="props.modelValue ? 'Unmute' : 'Mute'"
+		:aria-label="props.modelValue ? t('Unmute') : t('Mute')"
 		v-bind="{ size: props.size }"
 		v-html="props.modelValue ? VolumeMuteIcon : VolumeUpIcon"
 	/>

@@ -1,6 +1,6 @@
 import { BPM } from "@vapurrmaid/bpm";
 import { Ref } from "vue";
-
+import t from "../i18n/locale";
 import { Meter } from "./Meter";
 
 export class MetronomeBPM {
@@ -27,6 +27,8 @@ export class MetronomeBPM {
 	}
 
 	toString() {
-		return this.isValid() ? `${String(this.bpm)} BPM` : "⚠️ Invalid BPM";
+		return this.isValid()
+			? t(`%1 BPM`, String(this.bpm))
+			: t("⚠️ Invalid BPM");
 	}
 }
