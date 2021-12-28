@@ -29,6 +29,6 @@ export class MetronomeBPM {
 	toString() {
 		return this.isValid()
 			? t(`%1 BPM`, String(this.bpm))
-			: t("⚠️ Invalid BPM");
+			: `⚠️ ${t("Invalid BPM")}`;
 	}
 }
