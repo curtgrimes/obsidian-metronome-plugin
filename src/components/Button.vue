@@ -2,14 +2,16 @@
 const props = defineProps<{
 	size?: "small" | "medium" | "large";
 	disabled?: boolean;
+	bordered?: boolean;
 }>();
 </script>
 
 <template>
 	<button
-		class="button"
+		:class="['button', $props.class]"
 		:disabled="disabled"
 		:data-size="props.size || 'small'"
+		:data-bordered="bordered"
 		v-bind="{ size }"
 	>
 		<slot />
@@ -27,13 +29,16 @@ const props = defineProps<{
 	outline: 0 !important;
 	box-shadow: none !important;
 	border-radius: 0.2rem;
-	width: 2.5rem;
+	min-width: 2.5rem;
+	width: min-content;
 	height: 1.75rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	z-index: 2;
 	color: var(--text-normal);
+	font-size: inherit;
+	white-space: nowrap;
 
 	&[disabled] {
 		pointer-events: none;
@@ -55,6 +60,27 @@ const props = defineProps<{
 		width: 4rem;
 		height: 3.5rem;
 		padding: 0.35rem;
+	}
+
+	&[data-bordered="true"] {
+		position: relative;
+		padding: 0 0.5rem !important;
+		margin: 0 0.5rem !important;
+
+		&::before {
+			content: "";
+			z-index: -1;
+			background: var(
+				--background-secondary-alt,
+				rgba(0, 0, 0, 0)
+			) !important;
+			opacity: 0.5;
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+		}
 	}
 
 	& > * {

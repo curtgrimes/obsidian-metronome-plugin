@@ -66,17 +66,19 @@ tockNotes: A4
 
 These are all the options you can change when creating a metronome. Only the `bpm` option is required.
 
-| Option       | Type                                                                                                           | Description                                                                                                                                                                                                                                                                                                                                                                                  | Default              |
-| ------------ | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| `bpm`        | number or string                                                                                               | Tempo in [beats per minute](https://en.wikipedia.org/wiki/Tempo). Must be greater than 0. Supports simple math expressions using addition, subtraction, multiplication, and division, because sometimes you want to double a tempo (`60*2`), halve it (`140/2`) or perhaps increase or decrease a tempo but keep track of what the original value was for your reference later (`90+12`).    | (required)           |
-| `meter`      | string                                                                                                         | The [time signature](https://en.wikipedia.org/wiki/Time_signature) (meter) to play in. The bottom number must be 1, 2, 4, 8, 16, 32, or 64. Examples: `4/4`, `3/4`, `6/8`, `12/8`.                                                                                                                                                                                                           | `4/4`                |
-| `muted`      | `yes` or `no`                                                                                                  | Whether or not the metronome's audio starts muted.                                                                                                                                                                                                                                                                                                                                           | `yes`                |
-| `autoStart`  | `yes` or `no`                                                                                                  | Whether or not the metronome starts flashing visually right away. If `autoStart` is `yes` and `muted` is `no`, then the metronome's sound will also start playing immediately.                                                                                                                                                                                                               | `yes`                |
-| `size`       | `small`, `medium`, `large`, or `xlarge`                                                                        | Control the size of the metronome in the note.                                                                                                                                                                                                                                                                                                                                               | `small`              |
-| `style`      | `pulse`, `pendulum`, `line`, `dots`                                                                            | Control the style of the metronome. `pulse` makes the whole area flash color. `pendulum` shows an illustration of a metronome with a swinging pendulum. `line` shows a vertical line moving left and right. `dots` shows dots. Only `pulse` is available when `size` is `small`. The other styles are only available on `size` = `medium` and up.                                            | `pulse`              |
-| `instrument` | `click`, `beep`, `AMSynth`, `DuoSynth`, `FMSynth`, `MembraneSynth`, `MetalSynth`, `MonoSynth`, or `PluckSynth` | Change the metronome's instrument.                                                                                                                                                                                                                                                                                                                                                           | `click`              |
-| `tickNotes`  | string                                                                                                         | This determines the note(s) played on the **downbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when `instrument` is `click`. | `C6`<br/>`F5,A5,C5`  |
-| `tockNotes`  | string                                                                                                         | This determines the note(s) played on the **upbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when `instrument` is `click`.   | `C5`<br/>`F4,A4,C4 ` |
+| Option       | Type                                                                                                           | Description                                                                                                                                                                                                                                                                                                                                                                                  | Default                                                       |
+| ------------ | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `bpm`        | number or string                                                                                               | Tempo in [beats per minute](https://en.wikipedia.org/wiki/Tempo). Must be greater than 0. Supports simple math expressions using addition, subtraction, multiplication, and division, because sometimes you want to double a tempo (`60*2`), halve it (`140/2`) or perhaps increase or decrease a tempo but keep track of what the original value was for your reference later (`90+12`).    | (required)                                                    |
+| `meter`      | string                                                                                                         | The [time signature](https://en.wikipedia.org/wiki/Time_signature) (meter) to play in. The bottom number must be 1, 2, 4, 8, 16, 32, or 64. Examples: `4/4`, `3/4`, `6/8`, `12/8`.                                                                                                                                                                                                           | `4/4`                                                         |
+| `muted`      | `yes` or `no`                                                                                                  | Whether or not the metronome's audio starts muted.                                                                                                                                                                                                                                                                                                                                           | `yes`                                                         |
+| `autoStart`  | `yes` or `no`                                                                                                  | Whether or not the metronome starts flashing visually right away. If `autoStart` is `yes` and `muted` is `no`, then the metronome's sound will also start playing immediately.                                                                                                                                                                                                               | `yes`                                                         |
+| `stopAfter`  | duration like `30s`, `1h`, `1h30m`                                                                             | Automatically stop the metronome after the given duration.                                                                                                                                                                                                                                                                                                                                   | none                                                          |
+| `countdown`  | `always`, or duration like `30s`, `1h`, `1h30m`                                                                | When used in conjunction with `stopAfter`, this controls how long the "Stopping in..." countdown button appears for before the metronome automatically stops. Set to `always` to always show the countdown.                                                                                                                                                                                  | `10s`, or the value of `stopAfter` if shorter than 10 seconds |
+| `size`       | `small`, `medium`, `large`, or `xlarge`                                                                        | Control the size of the metronome in the note.                                                                                                                                                                                                                                                                                                                                               | `small`                                                       |
+| `style`      | `pulse`, `pendulum`, `line`, `dots`                                                                            | Control the style of the metronome. `pulse` makes the whole area flash color. `pendulum` shows an illustration of a metronome with a swinging pendulum. `line` shows a vertical line moving left and right. `dots` shows dots. Only `pulse` is available when `size` is `small`. The other styles are only available on `size` = `medium` and up.                                            | `pulse`                                                       |
+| `instrument` | `click`, `beep`, `AMSynth`, `DuoSynth`, `FMSynth`, `MembraneSynth`, `MetalSynth`, `MonoSynth`, or `PluckSynth` | Change the metronome's instrument.                                                                                                                                                                                                                                                                                                                                                           | `click`                                                       |
+| `tickNotes`  | string                                                                                                         | This determines the note(s) played on the **downbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when `instrument` is `click`. | `C6`<br/>`F5,A5,C5`                                           |
+| `tockNotes`  | string                                                                                                         | This determines the note(s) played on the **upbeat**, specified in [scientific pitch notation](https://en.wikipedia.org/wiki/Scientific_pitch_notation). (For example, middle C is C4.) Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when `instrument` is `click`.   | `C5`<br/>`F4,A4,C4 `                                          |
 
 ## Examples
 
@@ -230,9 +232,43 @@ style: dots
 ```
 ````
 
-_Theme: [Solarized](https://github.com/Slowbad/obsidian-solarized) (dark)_
-
 ![](images/demo-style-dots.gif)
+
+### `stopAfter` and `countdown`
+
+You can have the metronome stop after an amount of time:
+
+````markdown
+```metronome
+bpm: 120
+meter:4/4
+stopAfter: 12s
+```
+````
+
+![](images/demo-stop-after.gif)
+
+By default the countdown button appears for the last 10 seconds of the `stopAfter` duration, but you can have it show for a longer period of time:
+
+````markdown
+```metronome
+bpm: 120
+meter:4/4
+stopAfter: 1m
+countdown: 30s
+```
+````
+
+Or you can have the countdown button always show:
+
+````markdown
+```metronome
+bpm: 120
+meter:4/4
+stopAfter: 1m
+countdown: always
+```
+````
 
 ### Works with themes
 

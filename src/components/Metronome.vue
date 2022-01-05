@@ -4,6 +4,7 @@ import OverlayToggle from "./OverlayToggle.vue";
 import Controls from "./Controls.vue";
 import Status from "./Status.vue";
 import MuteToggle from "./MuteToggle.vue";
+import DisableAutoStopTimerButton from "./DisableAutoStopTimerButton.vue";
 import Visualization from "./visualizations/Visualization.vue";
 import {
 	ref,
@@ -19,6 +20,7 @@ import { playTick, playTickUpbeat, playTock, playSynth } from "../sounds";
 import { useTick } from "../hooks/useTick";
 import { useParentMarkdownWrapperVisibilityWatcher } from "../hooks/useParentMarkdownWrapperVisibilityWatcher";
 import { useCSSAnimationSynchronizer } from "../hooks/useCSSAnimationSynchronizer";
+import { useAutoStopTimer } from "../hooks/useAutoStopTimer";
 
 const props = defineProps<{
 	bpm: MetronomeCodeBlockParameters["bpm"];
@@ -27,6 +29,8 @@ const props = defineProps<{
 	size: MetronomeCodeBlockParameters["size"];
 	style: MetronomeCodeBlockParameters["style"];
 	autoStart: MetronomeCodeBlockParameters["autoStart"];
+	stopAfter: MetronomeCodeBlockParameters["stopAfter"];
+	countdown: MetronomeCodeBlockParameters["countdown"];
 	instrument: MetronomeCodeBlockParameters["instrument"];
 	tickNotes: MetronomeCodeBlockParameters["tickNotes"];
 	tockNotes: MetronomeCodeBlockParameters["tockNotes"];
@@ -47,11 +51,17 @@ const {
 } = useTick(meter);
 const parentWrapperIsVisible =
 	useParentMarkdownWrapperVisibilityWatcher(metronome);
-
 const { haltAnimationStyle } = useCSSAnimationSynchronizer({
 	synchronizeElement: metronome,
 	onBeat,
 });
+const {
+	startAutoStopTimer,
+	resetAutoStopTimer,
+	timeLeft,
+	expired,
+	expiringSoon,
+} = useAutoStopTimer();
 
 // Do sounds
 onTick(
@@ -76,7 +86,6 @@ onTock(
 			: playSynth(props.tockNotes, props.instrument))
 );
 
-const emit = defineEmits(["didCreateInterval"]);
 const interval = ref(null);
 
 const startInterval = () => {
@@ -85,6 +94,10 @@ const startInterval = () => {
 			doBeat,
 			props.bpm.getBeatDurationSeconds(meter) * 1000
 		);
+
+		if (props.stopAfter) {
+			startAutoStopTimer(props.stopAfter, props.countdown);
+		}
 	}
 };
 
@@ -97,10 +110,17 @@ watch(
 			startInterval();
 		} else {
 			stopInterval();
+			resetAutoStopTimer();
 		}
 	},
 	{ immediate: true }
 );
+
+watch(expired, () => {
+	if (expired.value) {
+		started.value = false;
+	}
+});
 
 onBeforeUnmount(stopInterval);
 </script>
@@ -146,6 +166,11 @@ onBeforeUnmount(stopInterval);
 				:bpm="bpm"
 				:meter="meter"
 				:size="props.size"
+			/>
+			<DisableAutoStopTimerButton
+				:expiringSoon="expiringSoon"
+				:timeLeft="timeLeft"
+				@click="resetAutoStopTimer"
 			/>
 		</Controls>
 	</div>

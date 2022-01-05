@@ -18,6 +18,8 @@ export interface MetronomeCodeBlockParameters {
 	size: MetronomeSize;
 	style: MetronomeStyle;
 	autoStart: boolean;
+	stopAfter: string;
+	countdown: string;
 	instrument: MetronomeInstrument;
 	tickNotes: Frequency[];
 	tockNotes: Frequency[];
@@ -38,9 +40,6 @@ export default class MetronomePlugin extends Plugin {
 
 				const app = createApp(Metronome, {
 					...parameters,
-					onDidCreateInterval(interval: number) {
-						child.registerInterval(interval);
-					},
 				});
 				this.metronomeAppInstances.push(app);
 
@@ -85,7 +84,9 @@ export default class MetronomePlugin extends Plugin {
 			meter: values.meter ? Meter.fromString(values.meter) : null,
 			size: isMetronomeSize(values.size) ? values.size : "small",
 			style: isMetronomeStyle(values.style) ? values.style : "pulse",
-			autoStart: values.autostart ? values.autoStart === "yes" : null,
+			autoStart: values.autostart ? values.autostart === "yes" : null,
+			stopAfter: values.stopafter ? values.stopafter : null,
+			countdown: values.countdown ? values.countdown : "10s",
 			instrument: isMetronomeInstrument(values.instrument)
 				? values.instrument
 				: "click",
