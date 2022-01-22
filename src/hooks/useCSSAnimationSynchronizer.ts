@@ -55,6 +55,7 @@ export function useCSSAnimationSynchronizer({
 		if (!needsSync.value) {
 			// This runs on every onBeat, but we only want to do stuff
 			// if we know we have to synchronize.
+			synchronizeElement.value?.style.setProperty("--sync-delay", `0ms`);
 			return;
 		}
 
