@@ -45,6 +45,8 @@ This produces a visual metronome in your note. By default it is muted, but you c
 
 ![Kiku](images/demo-2.gif)
 
+> **Note for iOS Users:** If the metronome is silent on your iPhone, please ensure your device's physical Ring/Silent switch is set to Ring mode. Because iOS treats Obsidian as a web browser rather than a native media player, Apple's security rules completely block the metronome's sound effects whenever your phone is on silent. Turning up your media volume and flipping the physical switch back to Ring mode will instantly restore the audio.
+
 You can customize the metronome further:
 
 ````markdown
