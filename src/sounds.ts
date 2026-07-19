@@ -29,6 +29,19 @@ const getSynth = (instrument: MetronomeInstrument) => {
 			case "MembraneSynth":
 				synth = new Tone.PolySynth(Tone.MembraneSynth);
 				break;
+			case "WoodBlock":
+				synth = new Tone.PolySynth(Tone.MembraneSynth, {
+					pitchDecay: 0.008,
+					octaves: 2,
+					oscillator: { type: "sine" },
+					envelope: {
+						attack: 0.001,
+						decay: 0.15,
+						sustain: 0,
+						release: 0.1,
+					},
+				});
+				break;
 			case "MetalSynth":
 				synth = new Tone.PolySynth(Tone.MetalSynth);
 				break;

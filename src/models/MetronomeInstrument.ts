@@ -9,7 +9,8 @@ export type MetronomeInstrument =
 	| "MonoSynth"
 	| "NoiseSynth"
 	| "PluckSynth"
-	| "Synth";
+	| "Synth"
+	| "WoodBlock";
 
 export const defaultMetronomeInstrument = "beep";
 
@@ -24,6 +25,7 @@ export function isMetronomeInstrument(inputInstrument: string): boolean {
 		"MetalSynth",
 		"MonoSynth",
 		"PluckSynth",
+		"WoodBlock",
 	].includes(inputInstrument);
 }
 

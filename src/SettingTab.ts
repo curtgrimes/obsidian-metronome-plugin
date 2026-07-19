@@ -241,6 +241,7 @@ export class MetronomeSettingTab extends PluginSettingTab {
 						MetalSynth: "MetalSynth",
 						MonoSynth: "MonoSynth",
 						PluckSynth: "PluckSynth",
+						WoodBlock: "WoodBlock",
 					})
 					.setValue(this.plugin.settings.instrument)
 					.onChange(async (value: MetronomeInstrument) => {
