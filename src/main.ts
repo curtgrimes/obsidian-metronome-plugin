@@ -10,6 +10,11 @@ import {
 	isMetronomeInstrument,
 } from "./models/MetronomeInstrument";
 import { MetronomeStyle, isMetronomeStyle } from "@/models/MetronomeStyle";
+import {
+	MetronomeSettings,
+	DEFAULT_SETTINGS,
+} from "@/models/MetronomeSettings";
+import { MetronomeSettingTab } from "@/SettingTab";
 
 export interface MetronomeCodeBlockParameters {
 	bpm: MetronomeBPM;
@@ -28,8 +33,13 @@ export interface MetronomeCodeBlockParameters {
 export default class MetronomePlugin extends Plugin {
 	processors: MarkdownPostProcessor[];
 	metronomeAppInstances: App<Element>[] = [];
+	settings: MetronomeSettings;
 
 	async onload() {
+		await this.loadSettings();
+
+		this.addSettingTab(new MetronomeSettingTab(this.app, this));
+
 		this.registerMarkdownCodeBlockProcessor(
 			`metronome`,
 			(src, el, context) => {
@@ -57,6 +67,18 @@ export default class MetronomePlugin extends Plugin {
 		this.metronomeAppInstances.forEach((app) => app.unmount());
 	}
 
+	async loadSettings() {
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		);
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
 	getCodeBlockParameters(src: string): MetronomeCodeBlockParameters {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const values: { [key: string]: any } = {};
@@ -80,22 +102,42 @@ export default class MetronomePlugin extends Plugin {
 		return {
 			// Remember: use lowercase versions of values.* properties
 			bpm: new MetronomeBPM(values.bpm),
-			muted: values.muted ? values.muted === "yes" : true,
-			meter: values.meter ? Meter.fromString(values.meter) : null,
-			size: isMetronomeSize(values.size) ? values.size : "small",
-			style: isMetronomeStyle(values.style) ? values.style : "pulse",
-			autoStart: values.autostart ? values.autostart === "yes" : null,
-			stopAfter: values.stopafter ? values.stopafter : null,
-			countdown: values.countdown ? values.countdown : "10s",
+			muted: values.muted
+				? values.muted === "yes"
+				: this.settings.muted,
+			meter: values.meter
+				? Meter.fromString(values.meter)
+				: this.settings.meter
+				? Meter.fromString(this.settings.meter)
+				: null,
+			size: isMetronomeSize(values.size)
+				? values.size
+				: this.settings.size,
+			style: isMetronomeStyle(values.style)
+				? values.style
+				: this.settings.style,
+			autoStart: values.autostart
+				? values.autostart === "yes"
+				: this.settings.autoStart,
+			stopAfter: values.stopafter
+				? values.stopafter
+				: this.settings.stopAfter || null,
+			countdown: values.countdown
+				? values.countdown
+				: this.settings.countdownMode === "always"
+				? "always"
+				: this.settings.countdownDuration,
 			instrument: isMetronomeInstrument(values.instrument)
 				? values.instrument
-				: "click",
-			tickNotes: parseMaybeCommaSeparatedToArray(values.ticknotes) || [
-				"C6",
-			],
-			tockNotes: parseMaybeCommaSeparatedToArray(values.tocknotes) || [
-				"C5",
-			],
+				: this.settings.instrument,
+			tickNotes: parseMaybeCommaSeparatedToArray(values.ticknotes) ||
+				parseMaybeCommaSeparatedToArray(this.settings.tickNotes) || [
+					"C6",
+				],
+			tockNotes: parseMaybeCommaSeparatedToArray(values.tocknotes) ||
+				parseMaybeCommaSeparatedToArray(this.settings.tockNotes) || [
+					"C5",
+				],
 		};
 	}
 }

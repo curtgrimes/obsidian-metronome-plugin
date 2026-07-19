@@ -29,6 +29,10 @@ I use [obsidian-plugin-abcjs](https://github.com/TilBlechschmidt/obsidian-plugin
 1. Install the plugin.
 1. Enable the plugin.
 
+## Default Settings
+
+Every option below except `bpm` can be given a default value from **Settings > Metronome** in Obsidian, so you don't have to repeat it in every code block. Any option you set directly in a code block overrides the default from the settings screen for that metronome.
+
 ## Usage
 
 Open a note and place a code block in your note like the one below. Give it a `bpm` ([beats per minute](https://en.wikipedia.org/wiki/Tempo)) for your tempo. In the example below, I've set `bpm` to `120`.
@@ -66,7 +70,7 @@ tockNotes: A4
 
 ## Metronome Options
 
-These are all the options you can change when creating a metronome. Only the `bpm` option is required.
+These are all the options you can change when creating a metronome. Only the `bpm` option is required. The default for every other option can be changed in **Settings > Metronome**.
 
 | Option       | Type                                                                                                           | Description                                                                                                                                                                                                                                                                                                                                                                                  | Default                                                       |
 | ------------ | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
