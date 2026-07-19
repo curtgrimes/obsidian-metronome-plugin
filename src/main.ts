@@ -15,6 +15,7 @@ import {
 	DEFAULT_SETTINGS,
 } from "@/models/MetronomeSettings";
 import { MetronomeSettingTab } from "@/SettingTab";
+import "@/settings.css";
 
 export interface MetronomeCodeBlockParameters {
 	bpm: MetronomeBPM;

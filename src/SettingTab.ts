@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, DropdownComponent, PluginSettingTab, Setting, TextComponent } from "obsidian";
 import MetronomePlugin from "./main";
 import { MetronomeSize } from "@/models/MetronomeSize";
 import { MetronomeStyle } from "@/models/MetronomeStyle";
@@ -12,10 +12,28 @@ export class MetronomeSettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
+	private setTextDisabled(text: TextComponent, disabled: boolean): void {
+		text.setDisabled(disabled);
+		text.inputEl.toggleClass("metronome-setting-field-disabled", disabled);
+	}
+
 	display(): void {
 		const { containerEl } = this;
 
 		containerEl.empty();
+
+		if (
+			this.plugin.settings.size === "small" &&
+			this.plugin.settings.style !== "pulse"
+		) {
+			this.plugin.settings.style = "pulse";
+			this.plugin.saveSettings();
+		}
+
+		let styleDropdown: DropdownComponent;
+		let countdownDurationText: TextComponent;
+		let tickNotesText: TextComponent;
+		let tockNotesText: TextComponent;
 
 		new Setting(containerEl)
 			.setName("Meter")
@@ -87,18 +105,26 @@ export class MetronomeSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.countdownMode)
 					.onChange(async (value: "always" | "duration") => {
 						this.plugin.settings.countdownMode = value;
+						this.setTextDisabled(
+							countdownDurationText,
+							value === "always"
+						);
 						await this.plugin.saveSettings();
 					})
 			)
-			.addText((text) =>
-				text
+			.addText((text) => {
+				countdownDurationText = text
 					.setPlaceholder("10s")
 					.setValue(this.plugin.settings.countdownDuration)
 					.onChange(async (value) => {
 						this.plugin.settings.countdownDuration = value;
 						await this.plugin.saveSettings();
-					})
-			);
+					});
+				this.setTextDisabled(
+					countdownDurationText,
+					this.plugin.settings.countdownMode === "always"
+				);
+			});
 
 		new Setting(containerEl)
 			.setName("Size")
@@ -114,6 +140,11 @@ export class MetronomeSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.size)
 					.onChange(async (value: MetronomeSize) => {
 						this.plugin.settings.size = value;
+						if (value === "small") {
+							this.plugin.settings.style = "pulse";
+							styleDropdown.setValue("pulse");
+						}
+						styleDropdown.setDisabled(value === "small");
 						await this.plugin.saveSettings();
 					})
 			);
@@ -123,8 +154,8 @@ export class MetronomeSettingTab extends PluginSettingTab {
 			.setDesc(
 				"Control the style of the metronome. Pulse makes the whole area flash color. Pendulum shows an illustration of a metronome with a swinging pendulum. Line shows a vertical line moving left and right. Dots shows dots. Only pulse is available when size is small. The other styles are only available on size medium and up."
 			)
-			.addDropdown((dropdown) =>
-				dropdown
+			.addDropdown((dropdown) => {
+				styleDropdown = dropdown
 					.addOptions({
 						pulse: "Pulse",
 						pendulum: "Pendulum",
@@ -135,8 +166,9 @@ export class MetronomeSettingTab extends PluginSettingTab {
 					.onChange(async (value: MetronomeStyle) => {
 						this.plugin.settings.style = value;
 						await this.plugin.saveSettings();
-					})
-			);
+					});
+				styleDropdown.setDisabled(this.plugin.settings.size === "small");
+			});
 
 		new Setting(containerEl)
 			.setName("Instrument")
@@ -157,6 +189,8 @@ export class MetronomeSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.instrument)
 					.onChange(async (value: MetronomeInstrument) => {
 						this.plugin.settings.instrument = value;
+						this.setTextDisabled(tickNotesText, value === "click");
+						this.setTextDisabled(tockNotesText, value === "click");
 						await this.plugin.saveSettings();
 					})
 			);
@@ -164,31 +198,39 @@ export class MetronomeSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Tick notes")
 			.setDesc(
-				"This determines the note(s) played on the downbeat, specified in scientific pitch notation (for example, middle C is C4). Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when instrument is click."
+				"This determines the note(s) played on the downbeat, specified in scientific pitch notation (for example, middle C is C4). Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat."
 			)
-			.addText((text) =>
-				text
+			.addText((text) => {
+				tickNotesText = text
 					.setPlaceholder("C6")
 					.setValue(this.plugin.settings.tickNotes)
 					.onChange(async (value) => {
 						this.plugin.settings.tickNotes = value;
 						await this.plugin.saveSettings();
-					})
-			);
+					});
+				this.setTextDisabled(
+					tickNotesText,
+					this.plugin.settings.instrument === "click"
+				);
+			});
 
 		new Setting(containerEl)
 			.setName("Tock notes")
 			.setDesc(
-				"This determines the note(s) played on the upbeat, specified in scientific pitch notation (for example, middle C is C4). Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat. Has no effect when instrument is click."
+				"This determines the note(s) played on the upbeat, specified in scientific pitch notation (for example, middle C is C4). Multiple tones can be played at the same time by providing a comma-separated list of tones. If there is no meter, every beat is considered a downbeat."
 			)
-			.addText((text) =>
-				text
+			.addText((text) => {
+				tockNotesText = text
 					.setPlaceholder("C5")
 					.setValue(this.plugin.settings.tockNotes)
 					.onChange(async (value) => {
 						this.plugin.settings.tockNotes = value;
 						await this.plugin.saveSettings();
-					})
-			);
+					});
+				this.setTextDisabled(
+					tockNotesText,
+					this.plugin.settings.instrument === "click"
+				);
+			});
 	}
 }
