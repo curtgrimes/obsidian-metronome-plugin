@@ -1,4 +1,9 @@
-import { MarkdownPostProcessor, MarkdownRenderChild, Plugin } from "obsidian";
+import {
+	MarkdownPostProcessor,
+	MarkdownRenderChild,
+	Plugin,
+	TFile,
+} from "obsidian";
 import Metronome from "@/components/Metronome.vue";
 import { Frequency } from "tone/build/esm/core/type/Units";
 import { MetronomeBPM } from "@/models/MetronomeBPM";
@@ -44,7 +49,10 @@ export default class MetronomePlugin extends Plugin {
 		this.registerMarkdownCodeBlockProcessor(
 			`metronome`,
 			(src, el, context) => {
-				const parameters = this.getCodeBlockParameters(src);
+				const parameters = this.getCodeBlockParameters(
+					src,
+					context.sourcePath
+				);
 
 				const div = document.createElement("div");
 				const child = new MarkdownRenderChild(div);
@@ -80,7 +88,38 @@ export default class MetronomePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	getCodeBlockParameters(src: string): MetronomeCodeBlockParameters {
+	getFrontmatterProperties(sourcePath: string): {
+		bpm?: string;
+		meter?: string;
+	} {
+		if (!this.settings.useFrontmatterProperties || !sourcePath) {
+			return {};
+		}
+
+		const file = this.app.vault.getAbstractFileByPath(sourcePath);
+		if (!(file instanceof TFile)) {
+			return {};
+		}
+
+		const frontmatter =
+			this.app.metadataCache.getFileCache(file)?.frontmatter;
+		if (!frontmatter) {
+			return {};
+		}
+
+		const bpmValue = frontmatter[this.settings.tempoPropertyName];
+		const meterValue = frontmatter[this.settings.meterPropertyName];
+
+		return {
+			bpm: bpmValue !== undefined ? String(bpmValue) : undefined,
+			meter: meterValue !== undefined ? String(meterValue) : undefined,
+		};
+	}
+
+	getCodeBlockParameters(
+		src: string,
+		sourcePath?: string
+	): MetronomeCodeBlockParameters {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const values: { [key: string]: any } = {};
 
@@ -92,6 +131,9 @@ export default class MetronomePlugin extends Plugin {
 					(values[key.toLowerCase()] = (value || "").trim())
 			);
 
+		const frontmatterProperties =
+			this.getFrontmatterProperties(sourcePath);
+
 		const parseMaybeCommaSeparatedToArray = (
 			maybeCommaSeparated: string
 		): string[] | false =>
@@ -102,12 +144,17 @@ export default class MetronomePlugin extends Plugin {
 
 		return {
 			// Remember: use lowercase versions of values.* properties
-			bpm: new MetronomeBPM(values.bpm),
+			// Precedence: code block > frontmatter properties > configured defaults
+			bpm: new MetronomeBPM(
+				values.bpm || frontmatterProperties.bpm
+			),
 			muted: values.muted
 				? values.muted === "yes"
 				: this.settings.muted,
 			meter: values.meter
 				? Meter.fromString(values.meter)
+				: frontmatterProperties.meter
+				? Meter.fromString(frontmatterProperties.meter)
 				: this.settings.meter
 				? Meter.fromString(this.settings.meter)
 				: null,

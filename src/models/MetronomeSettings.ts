@@ -3,6 +3,9 @@ import { MetronomeStyle } from "./MetronomeStyle";
 import { MetronomeInstrument } from "./MetronomeInstrument";
 
 export interface MetronomeSettings {
+	useFrontmatterProperties: boolean;
+	tempoPropertyName: string;
+	meterPropertyName: string;
 	meter: string;
 	muted: boolean;
 	autoStart: boolean;
@@ -17,6 +20,9 @@ export interface MetronomeSettings {
 }
 
 export const DEFAULT_SETTINGS: MetronomeSettings = {
+	useFrontmatterProperties: false,
+	tempoPropertyName: "bpm",
+	meterPropertyName: "meter",
 	meter: "4/4",
 	muted: true,
 	autoStart: true,

@@ -33,6 +33,32 @@ I use [obsidian-plugin-abcjs](https://github.com/TilBlechschmidt/obsidian-plugin
 
 Every option below except `bpm` can be given a default value from **Settings > Metronome** in Obsidian, so you don't have to repeat it in every code block. Any option you set directly in a code block overrides the default from the settings screen for that metronome.
 
+## Reading Tempo and Meter from Note Properties
+
+If you keep a song's tempo and time signature in its [note properties](https://help.obsidian.md/properties) (frontmatter) rather than repeating them in every `metronome` code block, you can turn on **Use note properties** in **Settings > Metronome**. This option is disabled by default so existing metronomes keep behaving exactly as before.
+
+When enabled, the plugin reads the note's `bpm` and `meter` properties and uses them for any metronome in that note that doesn't set its own `bpm` or `meter`. You can change which property names to read from with the **Tempo property name** and **Meter property name** settings (they default to `bpm` and `meter`, matching the metronome's own option names).
+
+Precedence, from highest to lowest:
+
+1. The `bpm` / `meter` option set directly in the `metronome` code block.
+2. The note's `bpm` / `meter` properties (only when **Use note properties** is enabled).
+3. The default `meter` configured in **Settings > Metronome** (there is no configured default for `bpm`, so with nothing else set the metronome will show as invalid).
+
+For example, with this note:
+
+````markdown
+---
+bpm: 96
+meter: 3/4
+---
+
+```metronome
+```
+````
+
+...and **Use note properties** enabled, the metronome will play at 96 BPM in 3/4 time, even though the code block itself is empty.
+
 ## Usage
 
 Open a note and place a code block in your note like the one below. Give it a `bpm` ([beats per minute](https://en.wikipedia.org/wiki/Tempo)) for your tempo. In the example below, I've set `bpm` to `120`.

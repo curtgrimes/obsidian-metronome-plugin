@@ -34,6 +34,62 @@ export class MetronomeSettingTab extends PluginSettingTab {
 		let countdownDurationText: TextComponent;
 		let tickNotesText: TextComponent;
 		let tockNotesText: TextComponent;
+		let tempoPropertyNameText: TextComponent;
+		let meterPropertyNameText: TextComponent;
+
+		new Setting(containerEl)
+			.setName("Use note properties")
+			.setDesc(
+				"Whether or not to read the tempo and time signature from the note's frontmatter properties when they are not set in the metronome code block."
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.useFrontmatterProperties)
+					.onChange(async (value) => {
+						this.plugin.settings.useFrontmatterProperties = value;
+						this.setTextDisabled(tempoPropertyNameText, !value);
+						this.setTextDisabled(meterPropertyNameText, !value);
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Tempo property name")
+			.setDesc(
+				"The name of the note property to read the tempo (BPM) from, when reading from note properties is enabled."
+			)
+			.addText((text) => {
+				tempoPropertyNameText = text
+					.setPlaceholder("bpm")
+					.setValue(this.plugin.settings.tempoPropertyName)
+					.onChange(async (value) => {
+						this.plugin.settings.tempoPropertyName = value;
+						await this.plugin.saveSettings();
+					});
+				this.setTextDisabled(
+					tempoPropertyNameText,
+					!this.plugin.settings.useFrontmatterProperties
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Meter property name")
+			.setDesc(
+				"The name of the note property to read the time signature (meter) from, when reading from note properties is enabled."
+			)
+			.addText((text) => {
+				meterPropertyNameText = text
+					.setPlaceholder("meter")
+					.setValue(this.plugin.settings.meterPropertyName)
+					.onChange(async (value) => {
+						this.plugin.settings.meterPropertyName = value;
+						await this.plugin.saveSettings();
+					});
+				this.setTextDisabled(
+					meterPropertyNameText,
+					!this.plugin.settings.useFrontmatterProperties
+				);
+			});
 
 		new Setting(containerEl)
 			.setName("Meter")
