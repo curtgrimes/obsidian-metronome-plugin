@@ -43,10 +43,13 @@ interface MetronomeInstance {
 	app: App<Element>;
 }
 
+const SETTINGS_REFRESH_DEBOUNCE_MS = 500;
+
 export default class MetronomePlugin extends Plugin {
 	processors: MarkdownPostProcessor[];
 	metronomeInstances: MetronomeInstance[] = [];
 	settings: MetronomeSettings;
+	settingsRefreshTimer: number | null = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -85,17 +88,11 @@ export default class MetronomePlugin extends Plugin {
 			this.app.metadataCache.on("changed", (file) => {
 				if (!this.settings.useFrontmatterProperties) return;
 
-				this.metronomeInstances
-					.filter((instance) => instance.sourcePath === file.path)
-					.forEach((instance) => {
-						instance.app.unmount();
-						instance.div.empty();
-						instance.app = this.mountMetronome(
-							instance.src,
-							instance.sourcePath,
-							instance.div
-						);
-					});
+				this.refreshInstances(
+					this.metronomeInstances.filter(
+						(instance) => instance.sourcePath === file.path
+					)
+				);
 			})
 		);
 	}
@@ -111,8 +108,23 @@ export default class MetronomePlugin extends Plugin {
 		return app;
 	}
 
+	refreshInstances(instances: MetronomeInstance[]) {
+		instances.forEach((instance) => {
+			instance.app.unmount();
+			instance.div.empty();
+			instance.app = this.mountMetronome(
+				instance.src,
+				instance.sourcePath,
+				instance.div
+			);
+		});
+	}
+
 	onunload() {
 		// Plugin was disabled
+		if (this.settingsRefreshTimer !== null) {
+			window.clearTimeout(this.settingsRefreshTimer);
+		}
 		this.metronomeInstances.forEach((instance) => instance.app.unmount());
 	}
 
@@ -126,6 +138,16 @@ export default class MetronomePlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+
+		// Settings text fields save on every keystroke, so debounce the
+		// refresh to avoid restarting open metronomes mid-edit.
+		if (this.settingsRefreshTimer !== null) {
+			window.clearTimeout(this.settingsRefreshTimer);
+		}
+		this.settingsRefreshTimer = window.setTimeout(() => {
+			this.settingsRefreshTimer = null;
+			this.refreshInstances(this.metronomeInstances);
+		}, SETTINGS_REFRESH_DEBOUNCE_MS);
 	}
 
 	getFrontmatterProperties(sourcePath: string): {
