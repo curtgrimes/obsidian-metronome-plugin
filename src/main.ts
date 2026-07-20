@@ -36,9 +36,16 @@ export interface MetronomeCodeBlockParameters {
 	tockNotes: Frequency[];
 }
 
+interface MetronomeInstance {
+	sourcePath: string;
+	src: string;
+	div: HTMLElement;
+	app: App<Element>;
+}
+
 export default class MetronomePlugin extends Plugin {
 	processors: MarkdownPostProcessor[];
-	metronomeAppInstances: App<Element>[] = [];
+	metronomeInstances: MetronomeInstance[] = [];
 	settings: MetronomeSettings;
 
 	async onload() {
@@ -49,31 +56,64 @@ export default class MetronomePlugin extends Plugin {
 		this.registerMarkdownCodeBlockProcessor(
 			`metronome`,
 			(src, el, context) => {
-				const parameters = this.getCodeBlockParameters(
-					src,
-					context.sourcePath
-				);
-
 				const div = document.createElement("div");
 				const child = new MarkdownRenderChild(div);
 
-				const app = createApp(Metronome, {
-					...parameters,
-				});
-				this.metronomeAppInstances.push(app);
+				const instance: MetronomeInstance = {
+					sourcePath: context.sourcePath,
+					src,
+					div,
+					app: this.mountMetronome(src, context.sourcePath, div),
+				};
+				this.metronomeInstances.push(instance);
 
-				app.mount(div);
 				context.addChild(child);
 				el.append(div);
 
-				child.onunload = () => app.unmount();
+				child.onunload = () => {
+					instance.app.unmount();
+					this.metronomeInstances.remove(instance);
+				};
 			}
 		);
+
+		// Frontmatter properties aren't part of a metronome code block's own
+		// source, so editing them doesn't normally re-trigger the code block
+		// processor above. Re-render affected metronomes whenever the note's
+		// metadata (including frontmatter) changes.
+		this.registerEvent(
+			this.app.metadataCache.on("changed", (file) => {
+				if (!this.settings.useFrontmatterProperties) return;
+
+				this.metronomeInstances
+					.filter((instance) => instance.sourcePath === file.path)
+					.forEach((instance) => {
+						instance.app.unmount();
+						instance.div.empty();
+						instance.app = this.mountMetronome(
+							instance.src,
+							instance.sourcePath,
+							instance.div
+						);
+					});
+			})
+		);
+	}
+
+	mountMetronome(
+		src: string,
+		sourcePath: string,
+		div: HTMLElement
+	): App<Element> {
+		const parameters = this.getCodeBlockParameters(src, sourcePath);
+		const app = createApp(Metronome, { ...parameters });
+		app.mount(div);
+		return app;
 	}
 
 	onunload() {
 		// Plugin was disabled
-		this.metronomeAppInstances.forEach((app) => app.unmount());
+		this.metronomeInstances.forEach((instance) => instance.app.unmount());
 	}
 
 	async loadSettings() {
