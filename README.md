@@ -1,3 +1,7 @@
+# ⚠️ This plugin is archived
+
+This Obsidian plugin is archived. Search for other metronome plugins at https://community.obsidian.md.
+
 # Obsidian Metronome 🎵
 
 Use this plugin to add interactive metronomes to your notes. Use just the visual metronome or turn on a click or beep. Customize the tempo, meter, instrument, size, and more. Pair it with [obsidian-plugin-abcjs](https://github.com/TilBlechschmidt/obsidian-plugin-abcjs) to have your score and metronome living in harmony in a single note!
